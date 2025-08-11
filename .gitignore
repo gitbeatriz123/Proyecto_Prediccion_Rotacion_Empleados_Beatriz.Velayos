@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.pyc
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Datos y outputs grandes (no versionar)
+data/processed/
+output/
+postgres/
+
+# Archivos de sistema/IDE
+.DS_Store
+*.swp
