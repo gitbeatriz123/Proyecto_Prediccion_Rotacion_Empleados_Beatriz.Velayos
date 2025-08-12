@@ -1,68 +1,47 @@
-# Stack local para el proyecto de rotación de empleados
-
 services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-rotacion
+    environment:
+      POSTGRES_USER: ml
+      POSTGRES_PASSWORD: ml
+      POSTGRES_DB: mlops
+    ports:
+      - "5442:5432"
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+    restart: unless-stopped
+
   spark-master:
-    image: bitnami/spark:3.5.1
+    image: bitnami/spark:3.5
     container_name: spark-master
     environment:
       - SPARK_MODE=master
       - SPARK_RPC_AUTHENTICATION_ENABLED=no
       - SPARK_RPC_ENCRYPTION_ENABLED=no
-      - SPARK_LOCAL_DIRS=/tmp
+      - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
+      - SPARK_SSL_ENABLED=no
     ports:
-      - "7077:7077"      # Spark master
-      - "8080:8080"      # Spark master UI
-    volumes:
-      - ./data:/data
-      - ./scripts:/scripts
-    restart: unless-stopped
-
-  spark-worker-1:
-    image: bitnami/spark:3.5.1
-    container_name: spark-worker-1
-    environment:
-      - SPARK_MODE=worker
-      - SPARK_MASTER_URL=spark://spark-master:7077
-      - SPARK_WORKER_MEMORY=2G
-      - SPARK_WORKER_CORES=2
-      - SPARK_LOCAL_DIRS=/tmp
-    depends_on:
-      - spark-master
-    ports:
-      - "8081:8081"      # Spark worker UI
-    volumes:
-      - ./data:/data
-      - ./scripts:/scripts
+      - "7077:7077"   # Spark master RPC
+      - "8080:8080"   # Spark master UI
     restart: unless-stopped
 
   jupyter:
-    image: quay.io/jupyter/pyspark-notebook:latest
-    container_name: jupyter
+    build:
+      context: .
+      dockerfile: docker/jupyter.Dockerfile
+    container_name: jupyter-rotacion
     environment:
-      - SPARK_MASTER=spark://spark-master:7077
-      - PYSPARK_PYTHON=python
-      - JUPYTER_TOKEN=beatriz         # token fijo
+      JUPYTER_TOKEN: keepcoding
     ports:
-      - "8889:8888"                   # puerto host 8889 (evita conflicto con 8888)
+      - "8889:8888"   # http://localhost:8889
     volumes:
-      - ./notebooks:/home/jovyan/work
-      - ./data:/data
       - ./scripts:/scripts
+      - ./data:/data
       - ./output:/output
+      - ./notebooks:/home/jovyan/work
     depends_on:
+      - postgres
       - spark-master
     restart: unless-stopped
 
-  postgres:
-    image: postgres:15
-    container_name: postgres-rotacion   # evita conflicto con otros "postgres"
-    environment:
-      - POSTGRES_USER=ml
-      - POSTGRES_PASSWORD=ml
-      - POSTGRES_DB=mlops
-    ports:
-      - "5442:5432"                     # puerto host no conflictivo
-    volumes:
-      - ./postgres:/var/lib/postgresql/data
-      - ./output:/output
-    restart: unless-stopped
