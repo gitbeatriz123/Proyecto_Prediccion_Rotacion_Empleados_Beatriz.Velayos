@@ -16,3 +16,7 @@ Incluye KPIs de negocio y notebook de informe final.
 - `notebooks/` análisis, modelos, KPIs, informe
 - `output/` métricas/modelos/plots (ignorado en git)
 - `docker-compose.yml` entorno reproducible
+
+## Dashboard (Power BI)
+- Archivo PBIX: [`bi/Employee_Attrition_Dashboard.pbix`](bi/Employee_Attrition_Dashboard.pbix)
+
