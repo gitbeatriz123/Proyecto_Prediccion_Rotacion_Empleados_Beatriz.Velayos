@@ -20,4 +20,24 @@ Incluye KPIs de negocio y notebook de informe final.
 - ## Dashboard (Power BI)
 - Archivo PBIX: [bi/Employee_Attrition_Dashboard.pbix](bi/Employee_Attrition_Dashboard.pbix)
 
+- ## Dashboard (Power BI)
+- PBIX: [`bi/Employee_Attrition_Dashboard.pbix`](bi/Employee_Attrition_Dashboard.pbix)
+
+## Notebooks (HTML)
+- [01 — EDA](docs/01_EDA_Attrition.html)
+- [02 — Modelado baseline](docs/02_Modelado_Baseline.html)
+- [05 — Dashboard & KPIs](docs/05_Dashboard_KPIs.html)
+
+## Reproducir (rápido)
+```bash
+docker compose up -d
+docker compose run --rm jupyter python /scripts/preprocess.py \
+  --input /data/processed/employee_attrition.parquet \
+  --out /output/models/transformer.joblib
+docker compose run --rm jupyter python /scripts/train_ml.py \
+  --input /data/processed/employee_attrition.parquet --model logreg
+docker compose run --rm jupyter python /scripts/train_ml.py \
+  --input /data/processed/employee_attrition.parquet --model rf
+
+
 
