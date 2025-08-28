@@ -1,0 +1,7 @@
+joblib @ file:///home/conda/feedstock_root/build_artifacts/joblib_1691577114857/work
+matplotlib @ file:///home/conda/feedstock_root/build_artifacts/matplotlib-suite_1697011600307/work
+matplotlib-inline @ file:///home/conda/feedstock_root/build_artifacts/matplotlib-inline_1660814786464/work
+numpy @ file:///home/conda/feedstock_root/build_artifacts/numpy_1687808322243/work
+pandas @ file:///home/conda/feedstock_root/build_artifacts/pandas_1688740512823/work
+scikit-learn @ file:///home/conda/feedstock_root/build_artifacts/scikit-learn_1696574834166/work
+seaborn @ file:///home/conda/feedstock_root/build_artifacts/seaborn-split_1696262444380/work
