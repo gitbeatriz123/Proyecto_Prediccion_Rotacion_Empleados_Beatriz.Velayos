@@ -1,0 +1,60 @@
+feature,effect
+JobRole_Sales Representative,1.0512365889337882
+BusinessTravel_Travel_Frequently,0.8520787626172793
+JobRole_Laboratory Technician,0.8288257742753187
+JobRole_Human Resources,0.7992858924746912
+YearsAtCompany,0.7780695777612888
+EducationField_Technical Degree,0.7640818382422655
+MaritalStatus_Single,0.7070131291679932
+overtime_flag,0.6351317947369756
+YearsSinceLastPromotion,0.5336628638378448
+Department_Sales,0.44114322637657943
+NumCompaniesWorked,0.4272772666357109
+EducationField_Human Resources,0.3971227996044469
+DistanceFromHome,0.31152080010103095
+Gender_Male,0.28843488111442905
+OverTime_Yes,0.2860971227000088
+BusinessTravel_Travel_Rarely,0.17178128842974466
+JobLevel,0.12949887812338298
+JobRole_Sales Executive,0.11266121268224599
+PerformanceRating,0.09861418908018582
+Department_Research & Development,0.09344356031593234
+survey_ManagerRelationship,0.08037667765599861
+survey_Engagement,0.07364850391780305
+MonthlyRate,0.053964883140439575
+MaritalStatus_Married,0.042973974394068595
+EducationField_Marketing,0.014889278120973912
+HourlyRate,0.002463037037282464
+Education,-0.011178088746008312
+survey_WorkLifeBalanceSurvey,-0.03399677146687037
+tenure_ratio,-0.03761325570652777
+OverTime_No,-0.07839347985607961
+Gender_Female,-0.08073123827044915
+survey_RemoteWorkSatisfaction,-0.08925338701207926
+income_yearly,-0.10236924074214368
+MonthlyIncome,-0.10236924074214955
+JobRole_Manufacturing Director,-0.10391662797868988
+JobRole_Research Scientist,-0.11547566336740632
+DailyRate,-0.13466008966152804
+StockOptionLevel,-0.14344485317699968
+survey_Satisfaction,-0.1732074275858489
+PercentSalaryHike,-0.1754934992654378
+Age,-0.191819854567649
+WorkLifeBalance,-0.21076897165086833
+RelationshipSatisfaction,-0.22088873790695274
+TrainingTimesLastYear,-0.24107377978855407
+EducationField_Medical,-0.278181646086243
+EducationField_Other,-0.2863015383609164
+JobInvolvement,-0.3140426390387741
+Department_Human Resources,-0.3268831438486713
+EducationField_Life Sciences,-0.4039070886765729
+JobSatisfaction,-0.40450940252856066
+EnvironmentSatisfaction,-0.4371543713837674
+TotalWorkingYears,-0.4698962349470597
+YearsInCurrentRole,-0.5352321292516448
+MaritalStatus_Divorced,-0.542283460718106
+YearsWithCurrManager,-0.5446106764542916
+JobRole_Manager,-0.5574493906972612
+JobRole_Healthcare Representative,-0.6135350794148542
+BusinessTravel_Non-Travel,-0.8161564082031215
+JobRole_Research Director,-1.1939290640638383
