@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<title>Memoria del Proyecto — Predicción de Rotación</title>
+<style>
+  body{ font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif; line-height:1.5; color:#222; margin:40px; }
+  h1,h2{ margin:0 0 .4rem 0; }
+  h1{ font-size: 28px; }
+  h2{ font-size: 20px; margin-top:1.4rem; border-bottom:1px solid #ddd; padding-bottom:.2rem;}
+  p,li{ font-size:14px; }
+  code, pre{ font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size:13px; }
+  .kpi{ background:#f6f8fa; border:1px solid #e2e5e9; border-radius:8px; padding:8px 12px; display:inline-block; margin:4px 8px 4px 0;}
+  ul{ margin-top:.2rem; }
+</style>
+</head>
+<body>
+<h1>Memoria del Proyecto — Predicción de Rotación de Empleados</h1>
+<p><strong>Autora:</strong> Beatriz Velayos &nbsp; | &nbsp; <strong>Bootcamp Big Data · AI · ML</strong> &nbsp; | &nbsp; <strong>Versión:</strong> v1.0-entrega</p>
+
+<h2>1. Resumen ejecutivo</h2>
+<p>Se construye un sistema reproducible para predecir la rotación (attrition) y explicar sus <em>drivers</em>, con ingesta/ETL, modelado supervisado, persistencia de métricas y un <strong>dashboard de negocio en Power BI</strong>. El proceso está dockerizado y versionado en GitHub, e incluye memoria y notebooks exportados a HTML.</p>
+
+<h2>2. Objetivo de negocio</h2>
+<ul>
+  <li>Anticipar qué empleados tienen mayor riesgo de abandonar la compañía.</li>
+  <li>Dar <strong>explicabilidad</strong> (drivers) y KPIs entendibles para RR. HH.</li>
+  <li>Facilitar decisiones: planes de retención, revisión de políticas y compensación.</li>
+</ul>
+
+<h2>3. Datos</h2>
+<ul>
+  <li><strong>WA HR Employee Attrition</strong> (1.470 filas). Variable objetivo: <code>Attrition</code> (Yes/No).</li>
+  <li><strong>Encuesta de clima</strong> (Engagement, Satisfaction, WorkLifeBalanceSurvey, ManagerRelationship, RemoteWorkSatisfaction) unida por <code>EmployeeNumber</code>.</li>
+</ul>
+<p class="kpi"><strong>Filas finales:</strong> 1.470</p>
+<p class="kpi"><strong>Attrition positivo:</strong> 237</p>
+<p class="kpi"><strong>Tasa attrition:</strong> 0,1612</p>
+
+<h2>4. Metodología</h2>
+<p><strong>EDA</strong>: revisión de nulos, duplicados, dominios categóricos, y creación de variables (p. ej. <code>overtime_flag</code>, <code>income_yearly</code>, <code>tenure_ratio</code>).<br>
+<strong>ETL (PySpark)</strong>: limpieza, join por <code>EmployeeNumber</code> y guardado en Parquet.</p>
+<p><strong>Modelado (scikit-learn)</strong>:</p>
+<ul>
+  <li><strong>Regresión logística</strong> con preprocesado (numérico + OneHot).</li>
+  <li><strong>Random Forest</strong> como contraste.</li>
+  <li>Métricas por validación hold-out y óptimo de F1 por umbral.</li>
+</ul>
+<p><strong>Persistencia</strong>: métricas a <code>output/metrics/model_compare.json</code> y predicciones por modelo a Postgres (<code>predictions_latest</code>), para su consumo desde Power BI.</p>
+
+<h2>5. Resultados (principales)</h2>
+<ul>
+  <li><strong>LogReg</strong> — AUC: <code>0.8173</code>, PR-AUC: <code>0.5627</code>, F1* <code>0.5286</code>, umbral* <code>0.7324</code>.</li>
+  <li><strong>Random Forest</strong> — AUC: <code>0.8051</code>, PR-AUC: <code>0.5364</code>, F1* <code>0.5348</code>, umbral* <code>0.22</code>.</li>
+</ul>
+<p>La LogReg ofrece <strong>mejor ROC-AUC</strong> y explicación directa vía coeficientes. En el dashboard se exponen los <em>Top drivers</em> (coeficientes/impacts) y su <em>signo</em> para interpretar el efecto sobre la probabilidad de <em>Attrition = Yes</em>.</p>
+
+<h2>6. Dashboard (Power BI)</h2>
+<ul>
+  <li><strong>Página 1 — Resumen &amp; KPIs</strong>: métricas globales, selector de modelo y explicación breve de AUC, PR-AUC y F1.</li>
+  <li><strong>Página 2 — Segmentos &amp; Drivers</strong>: barras Top-N de drivers (LogReg) y lectura por segmentos.</li>
+  <li><strong>Página 3 — Departamentos</strong>: KPIs por departamento (sin medidas DAX adicionales).</li>
+  <li><strong>Página 4 — Puestos (Job Roles)</strong>: comparación de riesgo por rol.</li>
+</ul>
+
+<h2>7. Reproducibilidad</h2>
+<pre><code>docker compose up -d
+docker compose run --rm jupyter python /scripts/preprocess.py \
+  --input /data/processed/employee_attrition.parquet \
+  --out /output/models/transformer.joblib
+docker compose run --rm jupyter python /scripts/train_ml.py \
+  --input /data/processed/employee_attrition.parquet --model logreg
+docker compose run --rm jupyter python /scripts/train_ml.py \
+  --input /data/processed/employee_attrition.parquet --model rf
+</code></pre>
+
+<h2>8. Limitaciones y trabajo futuro</h2>
+<ul>
+  <li>Datos históricos limitados (un <em>snapshot</em>); faltan variables de comportamiento y trayectoria.</li>
+  <li>Equilibrio de clases y calibración de umbral por coste de error.</li>
+  <li>Monitorización en producción y refresco periódico.</li>
+</ul>
+
+<h2>9. Conclusiones</h2>
+<p>El sistema cumple el objetivo de negocio con un pipeline reproducible y un dashboard interpretable. La combinación de <strong>AUC≈0,82</strong> y drivers claros permite decisiones de RR. HH. informadas y priorizables.</p>
+</body>
+</html>
