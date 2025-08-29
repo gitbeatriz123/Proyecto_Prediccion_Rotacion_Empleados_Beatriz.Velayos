@@ -17,10 +17,7 @@ Incluye KPIs de negocio y notebook de informe final.
 - `output/` métricas/modelos/plots (ignorado en git)
 - `docker-compose.yml` entorno reproducible
 
-- ## Dashboard (Power BI)
-- Archivo PBIX: [bi/Employee_Attrition_Dashboard.pbix](bi/Employee_Attrition_Dashboard.pbix)
-
-- ## Dashboard (Power BI)
+## Dashboard (Power BI)
 - PBIX: [`bi/Employee_Attrition_Dashboard.pbix`](bi/Employee_Attrition_Dashboard.pbix)
 
 ## Notebooks (HTML)
@@ -38,6 +35,3 @@ docker compose run --rm jupyter python /scripts/train_ml.py \
   --input /data/processed/employee_attrition.parquet --model logreg
 docker compose run --rm jupyter python /scripts/train_ml.py \
   --input /data/processed/employee_attrition.parquet --model rf
-
-
-
