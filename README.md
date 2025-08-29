@@ -38,3 +38,10 @@ docker compose run --rm jupyter python /scripts/train_ml.py \
 
 ## Memoria del proyecto
 - PDF: [docs/Memoria_Proyecto_Beatriz.pdf](docs/Memoria_Proyecto_Beatriz.pdf)
+
+### Entregables
+- PBIX final: `bi/Employee_Attrition_Dashboard.pbix`
+- Memoria del proyecto (PDF): `docs/Memoria_Proyecto_Beatriz.pdf`
+- Notebooks para lectura rápida (HTML) en `/docs`
+- Modelos y métricas en `/output`
+- Tag de entrega: `v1.0-entrega`
