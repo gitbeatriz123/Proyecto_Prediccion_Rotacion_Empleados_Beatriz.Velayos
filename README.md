@@ -35,3 +35,6 @@ docker compose run --rm jupyter python /scripts/train_ml.py \
   --input /data/processed/employee_attrition.parquet --model logreg
 docker compose run --rm jupyter python /scripts/train_ml.py \
   --input /data/processed/employee_attrition.parquet --model rf
+
+## Memoria del proyecto
+- PDF: [docs/Memoria_Proyecto_Beatriz.pdf](docs/Memoria_Proyecto_Beatriz.pdf)
