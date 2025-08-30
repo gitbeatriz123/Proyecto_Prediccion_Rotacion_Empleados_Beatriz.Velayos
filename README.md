@@ -18,7 +18,7 @@ Incluye KPIs de negocio y notebook de informe final.
 - `docker-compose.yml` entorno reproducible
 
 ## Dashboard (Power BI)
-- PBIX: [`bi/Proyecto_Beatriz.pbix`](bi/Proyecto_Beatriz.pbix)
+- **Proyecto Beatriz (PBIX):** [`bi/Proyecto_Beatriz.pbix`](bi/Proyecto_Beatriz.pbix)
 
 ## Notebooks (HTML)
 - [01 — EDA](docs/01_EDA_Attrition.html)
