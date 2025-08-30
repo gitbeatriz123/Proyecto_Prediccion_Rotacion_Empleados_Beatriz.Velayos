@@ -13,3 +13,4 @@ postgres/
 # Archivos de sistema/IDE
 .DS_Store
 *.swp
+docs/*_src.pdf
