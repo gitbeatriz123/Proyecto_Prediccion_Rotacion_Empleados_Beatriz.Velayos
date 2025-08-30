@@ -4,74 +4,125 @@
 <meta charset="utf-8">
 <title>Memoria del Proyecto — Predicción de Rotación</title>
 <style>
-  body{ font-family: Arial, Helvetica, sans-serif; line-height:1.5; color:#222; margin:40px; }
+  body{ font-family: Arial, Helvetica, sans-serif; line-height:1.55; color:#222; margin:40px; }
   h1{ font-size: 26px; margin:0 0 .4rem 0; }
   h2{ font-size: 19px; margin:1.2rem 0 .2rem 0; border-bottom:1px solid #ddd; padding-bottom:.2rem;}
   p,li{ font-size:14px; }
-  code, pre{ font-family: "Courier New", monospace; font-size:13px; }
+  code, pre{ font-family: "Courier New", monospace; font-size:13px; white-space:pre-wrap; }
   .kpi{ background:#f4f4f4; border:1px solid #e3e3e3; border-radius:6px; padding:6px 10px; display:inline-block; margin:4px 8px 4px 0;}
   ul{ margin-top:.2rem; }
 </style>
 </head>
 <body>
 <h1>Memoria del Proyecto — Predicción de Rotación de Empleados</h1>
-<p><strong>Autora:</strong> Beatriz Velayos · <strong>Bootcamp Big Data · AI · ML</strong> · <strong>Tag:</strong> v1.0-entrega</p>
+<p><strong>Autora:</strong> Beatriz Velayos · <strong>Bootcamp:</strong> Big Data · AI · Machine Learning · <strong>Tag:</strong> v1.0-entrega</p>
 
-<h2>1. Resumen</h2>
-<p>Pipeline reproducible (Docker) para predecir rotación (attrition) y explicar <em>drivers</em>. Incluye ingesta/ETL con PySpark, modelado (scikit-learn), persistencia de métricas y dashboard en Power BI. Notebooks exportados a HTML y esta memoria en PDF.</p>
-
-<h2>2. Objetivo</h2>
+<h2>1) Idea y utilidad para la empresa</h2>
+<p>Predecir qué empleados tienen mayor probabilidad de causar baja (rotación voluntaria) para priorizar acciones de retención (revisiones salariales, planes de carrera, conciliación). Salidas operativas:</p>
 <ul>
-  <li>Estimar riesgo de baja por empleado.</li>
-  <li>Explicar factores clave (drivers) y KPIs para RR. HH.</li>
+  <li>Lista priorizada de empleados por probabilidad (con umbral operativo).</li>
+  <li>Dashboard de negocio (Power BI) con KPIs y drivers interpretables.</li>
 </ul>
 
-<h2>3. Datos</h2>
+<h2>2) Objetivos académicos (Bootcamp)</h2>
 <ul>
-  <li>WA HR Attrition (1.470 filas), objetivo: <code>Attrition</code> (Yes/No).</li>
-  <li>Encuesta de clima (Engagement, Satisfaction, WorkLifeBalanceSurvey, ManagerRelationship, RemoteWorkSatisfaction) unida por <code>EmployeeNumber</code>.</li>
-</ul>
-<p class="kpi"><strong>Filas finales:</strong> 1.470</p>
-<p class="kpi"><strong>Attrition positivo:</strong> 237</p>
-<p class="kpi"><strong>Tasa:</strong> 0,1612</p>
-
-<h2>4. Metodología</h2>
-<p><strong>EDA</strong>: nulos, duplicados, dominios; nuevas features (<code>overtime_flag</code>, <code>income_yearly</code>, <code>tenure_ratio</code>).<br>
-<strong>ETL (PySpark)</strong>: limpieza + join → Parquet.<br>
-<strong>Modelos</strong>: Regresión Logística (pipeline con escalado + OneHot) y Random Forest. Métricas: ROC-AUC, PR-AUC y F1 con umbral óptimo.</p>
-
-<h2>5. Resultados</h2>
-<ul>
-  <li><strong>LogReg</strong> — AUC 0.8173 · PR-AUC 0.5627 · F1* 0.5286 · thr* 0.7324</li>
-  <li><strong>RF</strong> — AUC 0.8051 · PR-AUC 0.5364 · F1* 0.5348 · thr* 0.22</li>
-</ul>
-<p>La LogReg ofrece mejor ROC-AUC y explicabilidad directa (coeficientes). Drivers y KPIs se muestran en el dashboard.</p>
-
-<h2>6. Dashboard (Power BI)</h2>
-<ul>
-  <li><strong>Resumen & KPIs</strong>: métricas principales y guía rápida.</li>
-  <li><strong>Segmentos & Drivers</strong>: Top-N coeficientes (LogReg) con signo.</li>
-  <li><strong>Departamentos / Job Roles</strong>: comparativas.</li>
+  <li>Pipeline reproducible (Docker) de calidad → ETL → ML → métricas.</li>
+  <li>Entrenar y comparar modelos baseline (LogReg, Random Forest).</li>
+  <li>Persistir resultados y exponerlos en un dashboard listo para negocio.</li>
+  <li>Entregar código versionado, notebooks HTML, PBIX y esta memoria.</li>
 </ul>
 
-<h2>7. Reproducibilidad</h2>
+<h2>3) Datos utilizados</h2>
+<ul>
+  <li><strong>Histórico HR</strong>: WA_Fn-UseC_-HR-Employee-Attrition.csv (1470 empleados; objetivo <code>Attrition</code> en {Yes, No}).</li>
+  <li><strong>Encuesta de clima</strong>: encuesta_clima.csv (Engagement, Satisfaction, WorkLifeBalanceSurvey, ManagerRelationship, RemoteWorkSatisfaction).</li>
+  <li><strong>Clave de unión</strong>: <code>EmployeeNumber</code>.</li>
+</ul>
+<p><strong>Variables derivadas</strong>: <code>overtime_flag</code>, <code>income_yearly = MonthlyIncome * 12</code>, <code>tenure_ratio = YearsAtCompany / TotalWorkingYears</code>.</p>
+<p><strong>Clase positiva</strong>: 237 “Yes” (~16,1%).</p>
+
+<h2>4) Arquitectura y estructura</h2>
+<ul>
+  <li>Servicios: Jupyter (ML), Spark (calidad/ETL), Postgres (persistencia opcional).</li>
+  <li>Estructura clave: <code>bi/</code> (PBIX), <code>docs/</code> (HTML + PDF), <code>scripts/</code> (pipeline), <code>data/</code>, <code>output/</code> (modelos y métricas).</li>
+</ul>
+
+<h2>5) Metodología y pasos</h2>
+<h3>5.1 Preparación</h3>
+<p>Contenedores con <code>docker compose up -d</code> y trabajo en JupyterLab.</p>
+
+<h3>5.2 Calidad de datos (Spark)</h3>
+<p>Script: <code>scripts/check_data_quality.py</code>. Comprobaciones: nulos en clave, duplicados, fracción de nulos por columna (&lt; 0,25), dominio del objetivo. Resultado: <strong>PASS</strong>.</p>
+
+<h3>5.3 ETL (Spark)</h3>
+<p>Script: <code>scripts/etl_attrition.py</code>. Join por <code>EmployeeNumber</code>, tipificación y normalización ligera, creación de features y salida a <code>data/processed/employee_attrition.parquet</code> (1470 filas; 16,1% positiva).</p>
+
+<h3>5.4 Preprocesado</h3>
+<p>Script: <code>scripts/preprocess.py</code>. Numéricas (StandardScaler) + categóricas (One-Hot). Se guarda el <em>transformer</em> en <code>output/models/transformer.joblib</code>.</p>
+
+<h3>5.5 Entrenamiento y comparación</h3>
+<p>Script: <code>scripts/train_ml.py</code>. Modelos: Logistic Regression (interpretable) y Random Forest (no lineal).</p>
+<ul>
+  <li><strong>LogReg</strong>: ROC-AUC ≈ 0,817 · PR-AUC ≈ 0,563 · F1* ≈ 0,529 · thr* ≈ 0,732.</li>
+  <li><strong>RF</strong>: ROC-AUC ≈ 0,805 · PR-AUC ≈ 0,536 · F1* ≈ 0,535 · thr* ≈ 0,22.</li>
+</ul>
+<p>Elección: <strong>LogReg</strong> por mejor PR-AUC e interpretabilidad. Métricas agregadas en <code>output/metrics/model_compare.json</code>.</p>
+
+<h3>5.6 Persistencia</h3>
+<p>Opción Postgres (tabla <code>predictions_latest</code>) o CSV para Power BI (<code>output/bi/feature_effects.csv</code>) si se evita conexión directa.</p>
+
+<h3>5.7 Dashboard (Power BI)</h3>
+<ul>
+  <li>Relación activa por <code>EmployeeNumber</code> entre predicciones y atributos.</li>
+  <li>Tabla Dim/Dum Modelo (desconectada) para Slicer de <code>model_name</code> (selección única).</li>
+</ul>
+<p><strong>Páginas:</strong> (1) Resumen &amp; KPIs; (2) Drivers (importancias/efectos); (3) Departamentos; (4) Puestos.</p>
+
+<h2>6) Resultados</h2>
+<ul>
+  <li>Tasa histórica de rotación: ~16,1%.</li>
+  <li>Modelo principal (LogReg): ROC-AUC ≈ 0,817 · PR-AUC ≈ 0,563 · F1* ≈ 0,529.</li>
+  <li>Drivers típicos de riesgo: <code>OverTime</code> alto, <code>YearsAtCompany</code> bajos, <code>MonthlyIncome</code> bajo, percepciones de conciliación/satisfacción peores.</li>
+</ul>
+
+<h2>7) Entregables</h2>
+<ul>
+  <li>Repositorio Git con código, modelos y métricas (<code>tag v1.0-entrega</code>).</li>
+  <li>Notebooks en HTML (<code>docs/01_EDA_Attrition.html</code>, <code>02_Modelado_Baseline.html</code>, <code>05_Dashboard_KPIs.html</code>).</li>
+  <li>Dashboard Power BI (<code>bi/Employee_Attrition_Dashboard.pbix</code>).</li>
+  <li>Memoria del proyecto (este PDF) en <code>docs/</code>.</li>
+</ul>
+
+<h2>8) Limitaciones y mejoras</h2>
+<ul>
+  <li>Clase minoritaria: calibración de probabilidades y umbral por costes.</li>
+  <li>Más datos (absentismo, desempeño) y validación más robusta.</li>
+  <li>MLOps: CI/CD, model registry, monitorización de <em>drift</em>.</li>
+</ul>
+
+<h2>9) Guía rápida</h2>
 <pre><code>docker compose up -d
+docker compose run --rm jupyter python /scripts/check_data_quality.py \
+  --input1 /data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv \
+  --input2 /data/raw/encuesta_clima.csv --key EmployeeNumber \
+  --max-null-frac 0.25 --spark-master local[*]
+
+docker compose run --rm jupyter python /scripts/etl_attrition.py \
+  --input1 /data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv \
+  --input2 /data/raw/encuesta_clima.csv --key EmployeeNumber \
+  --outdir /data/processed/employee_attrition.parquet --spark-master local[*]
+
 docker compose run --rm jupyter python /scripts/preprocess.py \
   --input /data/processed/employee_attrition.parquet \
   --out /output/models/transformer.joblib
+
 docker compose run --rm jupyter python /scripts/train_ml.py \
   --input /data/processed/employee_attrition.parquet --model logreg
 docker compose run --rm jupyter python /scripts/train_ml.py \
   --input /data/processed/employee_attrition.parquet --model rf
 </code></pre>
 
-<h2>8. Limitaciones y futuro</h2>
-<ul>
-  <li>Datos de un único corte; faltan variables temporales/comportamiento.</li>
-  <li>Ajuste de umbral por coste de error y monitorización en producción.</li>
-</ul>
-
-<h2>9. Conclusión</h2>
-<p>Se cumple el objetivo de negocio con un sistema reproducible y un dashboard interpretable (AUC≈0,82) para priorizar acciones de retención.</p>
+<h2>10) Conclusión</h2>
+<p>Se entrega un sistema reproducible para predecir rotación, con métricas transparentes y dashboard para priorizar acciones de retención: a quién ayudar primero y por qué, con trazabilidad técnica para evolucionarlo.</p>
 </body>
 </html>
