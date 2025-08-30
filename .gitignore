@@ -14,3 +14,4 @@ postgres/
 .DS_Store
 *.swp
 docs/*_src.pdf
+*.zip
