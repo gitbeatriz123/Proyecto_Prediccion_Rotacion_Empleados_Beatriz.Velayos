@@ -18,7 +18,7 @@ Incluye KPIs de negocio y notebook de informe final.
 - `docker-compose.yml` entorno reproducible
 
 ## Dashboard (Power BI)
-- PBIX: [`bi/Employee_Attrition_Dashboard.pbix`](bi/Employee_Attrition_Dashboard.pbix)
+- PBIX: [`bi/Proyecto_Beatriz.pbix`](bi/Proyecto_Beatriz.pbix)
 
 ## Notebooks (HTML)
 - [01 — EDA](docs/01_EDA_Attrition.html)
@@ -40,7 +40,7 @@ docker compose run --rm jupyter python /scripts/train_ml.py \
 - PDF: [docs/Memoria_Proyecto_Beatriz.pdf](docs/Memoria_Proyecto_Beatriz.pdf)
 
 ### Entregables
-- PBIX final: `bi/Employee_Attrition_Dashboard.pbix`
+- PBIX final: `bi/Proyecto_Beatriz.pbix`
 - Memoria del proyecto (PDF): `docs/Memoria_Proyecto_Beatriz.pdf`
 - Notebooks para lectura rápida (HTML) en `/docs`
 - Modelos y métricas en `/output`
