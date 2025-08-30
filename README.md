@@ -17,7 +17,7 @@ Incluye KPIs de negocio y notebook de informe final.
 - `output/` métricas/modelos/plots (ignorado en git)
 - `docker-compose.yml` entorno reproducible
 
-## Dashboard (Power BI)
+## Dashboard — Proyecto Beatriz (Power BI)
 - **Proyecto Beatriz (PBIX):** [`bi/Proyecto_Beatriz.pbix`](bi/Proyecto_Beatriz.pbix)
 
 ## Notebooks (HTML)
