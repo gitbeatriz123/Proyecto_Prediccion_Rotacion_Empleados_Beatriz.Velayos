@@ -48,17 +48,17 @@ docker compose run --rm jupyter python /scripts/train_ml.py \
 
 ## Capturas del Dashboard — Proyecto Beatriz
 
-A continuación, 5 vistas clave del PBIX para revisión rápida:
+1. **Resumen KPIs**  
+   ![Resumen KPIs del dashboard: tasa de rotación, distribución de riesgo y métricas de modelo](docs/powerbi/01_Resumen_KPIs.png "01 — Resumen KPIs")
 
-| Resumen & KPIs | Segmentos — Distribución de probabilidades |
-| --- | --- |
-| ![Resumen & KPIs](docs/powerbi/01_Resumen_KPIs.png) | ![Segmentos — Distribución de probabilidades](docs/powerbi/02_Segmentos_Distribucion_Probabilidades.png) |
+2. **Segmentos — Distribución de probabilidades**  
+   ![Segmentos y distribución de probabilidades de baja: histograma y cortes por segmentación](docs/powerbi/02_Segmentos_Distribucion_Probabilidades.png "02 — Segmentos y distribución de probabilidades")
 
-| Departamentos — Tasa de rotación | Puestos (Job Rules) — Horas extra y riesgo |
-| --- | --- |
-| ![Departamentos — Tasa de rotación](docs/powerbi/03_Departamentos_Tasa_Rotacion.png) | ![Puestos (Job Rules) — Horas extra y riesgo](docs/powerbi/04_Puestos_HorasExtra_Riesgo.png) |
+3. **Departamentos — Tasa de rotación**  
+   ![Tasa de rotación por departamento con comparativa y ordenación para detectar áreas críticas](docs/powerbi/03_Departamentos_Tasa_Rotacion.png "03 — Departamentos y tasa de rotación")
 
-| Drivers — Top coeficientes |
-| --- |
-| ![Drivers — Top coeficientes](docs/powerbi/05_Drivers_Top_Coeficientes.png) |
+4. **Puestos & Horas extra — Riesgo**  
+   ![Relación entre puestos, horas extra y probabilidad de baja para priorizar actuaciones](docs/powerbi/04_Puestos_HorasExtra_Riesgo.png "04 — Puestos, horas extra y riesgo")
 
+5. **Drivers — Principales factores**  
+   ![Factores impulsores (drivers) del modelo ordenados por contribución/impacto](docs/powerbi/05_Drivers_Top_Coeficientes.png "05 — Drivers principales del modelo")
