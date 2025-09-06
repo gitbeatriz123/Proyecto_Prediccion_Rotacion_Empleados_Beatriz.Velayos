@@ -25,6 +25,11 @@ Incluye KPIs de negocio y notebook de informe final.
 - [02 — Modelado baseline](docs/02_Modelado_Baseline.html)
 - [05 — Dashboard & KPIs](docs/05_Dashboard_KPIs.html)
 
+## Memoria del proyecto
+
+- **PDF**: [Memoria del Proyecto (PDF)](docs/Memoria_Proyecto_Beatriz.pdf)
+
+
 ## Reproducir (rápido)
 ```bash
 docker compose up -d
