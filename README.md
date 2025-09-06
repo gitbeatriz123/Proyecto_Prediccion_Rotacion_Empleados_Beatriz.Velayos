@@ -45,3 +45,20 @@ docker compose run --rm jupyter python /scripts/train_ml.py \
 - Notebooks para lectura rápida (HTML) en `/docs`
 - Modelos y métricas en `/output`
 - Tag de entrega: `v1.0-entrega`
+
+## Capturas del Dashboard — Proyecto Beatriz
+
+A continuación, 5 vistas clave del PBIX para revisión rápida:
+
+| Resumen & KPIs | Segmentos — Distribución de probabilidades |
+| --- | --- |
+| ![Resumen & KPIs](docs/powerbi/01_Resumen_KPIs.png) | ![Segmentos — Distribución de probabilidades](docs/powerbi/02_Segmentos_Distribucion_Probabilidades.png) |
+
+| Departamentos — Tasa de rotación | Puestos (Job Rules) — Horas extra y riesgo |
+| --- | --- |
+| ![Departamentos — Tasa de rotación](docs/powerbi/03_Departamentos_Tasa_Rotacion.png) | ![Puestos (Job Rules) — Horas extra y riesgo](docs/powerbi/04_Puestos_HorasExtra_Riesgo.png) |
+
+| Drivers — Top coeficientes |
+| --- |
+| ![Drivers — Top coeficientes](docs/powerbi/05_Drivers_Top_Coeficientes.png) |
+
