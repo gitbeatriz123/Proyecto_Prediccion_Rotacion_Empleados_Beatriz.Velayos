@@ -14,6 +14,7 @@ Jupyter monta las siguientes rutas del repositorio:
 - `./data` → `/data`
 - `./output` → `/output`
 - `./notebooks` → `/home/jovyan/work`
+- ./docs/powerbi → /docs/powerbi
 
 PostgreSQL conserva sus datos en `./postgres`. Al añadir workers de Spark, configura en ellos las rutas de datos que necesite el proceso distribuido.
 

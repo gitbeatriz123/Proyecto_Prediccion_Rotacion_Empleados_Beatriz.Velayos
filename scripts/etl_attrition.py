@@ -160,7 +160,7 @@ def feature_engineering(df):
 def write_parquet(df, outdir):
     (
         df
-        .coalesce(1)  # 1 fichero para facilitar el consumo aguas abajo / demo
+        .coalesce(1)  # 1 fichero para facilitar la lectura por los procesos siguientes
         .write
         .mode("overwrite")
         .option("compression", "snappy")

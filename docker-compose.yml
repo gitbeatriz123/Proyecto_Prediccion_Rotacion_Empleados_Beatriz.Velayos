@@ -4,7 +4,7 @@ services:
     container_name: postgres-rotacion
     environment:
       POSTGRES_USER: ml
-      # Credenciales locales de demostración; no reutilizar en despliegues reales.
+      # Credencial local de PostgreSQL para las conexiones del entorno.
       POSTGRES_PASSWORD: ml
       POSTGRES_DB: mlops
     ports:
@@ -39,6 +39,7 @@ services:
       - ./data:/data
       - ./output:/output
       - ./notebooks:/home/jovyan/work
+      - ./docs/powerbi:/docs/powerbi
     depends_on:
       - postgres
       - spark-master
