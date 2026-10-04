@@ -86,6 +86,8 @@ El archivo principal `WA_Fn-UseC_-HR-Employee-Attrition.csv` es el conjunto de e
 
 `output/metrics/model_compare.json` se regeneró con el mismo protocolo para los tres modelos: predicciones *out-of-fold* de validación cruzada estratificada de cinco particiones. Las métricas actuales son exploratorias. Para LogReg, Random Forest y MLP, respectivamente, ROC-AUC = 0,819 / 0,810 / 0,768; PR-AUC = 0,552 / 0,532 / 0,484; F1 optimizado = 0,533 / 0,544 / 0,470. El umbral y el F1 se eligen sobre las mismas predicciones OOF, por lo que no son una estimación independiente del rendimiento futuro.
 
+La comparación versionada se regeneró en esta revisión usando un Parquet construido localmente con las mismas transformaciones y nombres de columnas del ETL. En este entorno no estaban disponibles Docker Compose ni PySpark, así que no se pudo ejecutar el ETL Spark de extremo a extremo.
+
 No se ha realizado validación temporal, calibración independiente, análisis formal de equidad ni validación para decisiones laborales. El rendimiento en este dataset de ejemplo no predice el de otra organización. Las métricas versionadas se regeneraron con el código actual. El F1 y el umbral se optimizan sobre las mismas predicciones OOF, por lo que no son una estimación independiente del rendimiento futuro.
 
 ## Estructura
