@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Create a deterministic, explicitly synthetic climate survey for the demo."""
+"""Generate a reproducible synthetic climate survey from a fixed seed."""
 import argparse
 import csv
 import random
