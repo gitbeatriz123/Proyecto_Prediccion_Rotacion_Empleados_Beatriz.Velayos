@@ -1,53 +1,41 @@
-# Arquitectura — Entorno local (pasos 0 y 1)
+# Arquitectura del proyecto local
 
-## Componentes
-- **Spark Master / Worker** (bitnami/spark): procesamiento distribuido.
-- **Jupyter (pyspark-notebook)**: desarrollo interactivo y pruebas.
-- **PostgreSQL (opcional)**: persistencia de métricas/predicciones para BI.
+## Servicios definidos
 
-## Puertos
-- Spark Master UI: `http://localhost:8080`
-- Spark Worker UI: `http://localhost:8081`
-- Jupyter: `http://localhost:8888`
-- PostgreSQL: `localhost:5432`
+El archivo `docker-compose.yml` configura tres servicios:
 
-## Volúmenes compartidos
-- `./data` → `/data` (todos los servicios)
-- `./notebooks` → `/home/jovyan/work` (Jupyter)
-- `./scripts` → `/scripts` (todos los servicios)
-- `./output` → `/output` (Postgres y exportaciones)
+- **Jupyter:** entorno de trabajo con PySpark y scikit-learn. El puerto `8889` del equipo se publica solo en `127.0.0.1` y Jupyter genera un token al iniciar.
+- **Spark Master:** publica el RPC `7077` y la interfaz `8080` solo en `127.0.0.1`. No hay un servicio Spark Worker definido en Compose. Los notebooks y el ETL usan `local[*]` por defecto; el Master no participa en ese modo local.
+- **PostgreSQL:** base local de demostración, puerto `5442` del equipo enlazado solo a `127.0.0.1`. Las credenciales incluidas en Compose son exclusivamente de ejemplo y no deben reutilizarse en despliegues.
 
-> Nota: Leer ficheros siempre desde **`/data/...`** para que Spark en los workers pueda acceder a la misma ruta.
+## Rutas compartidas
 
-## Diagrama (simplificado)
+Solo el contenedor Jupyter monta estas rutas:
 
-           +-------------------------+
-           |       Jupyter           |
-           |  (pyspark-notebook)     |
-           |  Driver PySpark         |
-           +------------+------------+
-                        |
-                        | spark://spark-master:7077
-                        v
-           +-------------------------+
-           |      Spark Master       |
-           +------------+------------+
-                        |
-                        v
-           +-------------------------+
-           |      Spark Worker       |
-           +-------------------------+
+- `./scripts` → `/scripts`
+- `./data` → `/data`
+- `./output` → `/output`
+- `./notebooks` → `/home/jovyan/work`
 
-           Volúmenes compartidos: /data, /scripts, /output
+PostgreSQL persiste sus datos en `./postgres`. Para que Spark distribuido acceda a los mismos archivos, habría que configurar y montar las rutas también en los workers; esa configuración no forma parte de este prototipo.
 
-## Prueba rápida
-1) `docker compose up -d`
-2) En Jupyter, ejecuta:
+## Arranque y comprobación local
+
+```bash
+docker compose up -d --build
+docker compose logs jupyter
+```
+
+Abre `http://localhost:8889/lab` y usa el token de los registros. Para verificar PySpark en el modo configurado por defecto, ejecuta en un notebook:
+
 ```python
 from pyspark.sql import SparkSession
 spark = (SparkSession.builder
-         .master("spark://spark-master:7077")
+         .master("local[*]")
          .appName("smoke-test")
          .getOrCreate())
-spark.read.csv("/data/raw", header=True, inferSchema=True).limit(5).show()
+spark.read.csv("/data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv",
+               header=True, inferSchema=True).limit(5).show()
 ```
+
+El ETL y las instrucciones completas están en el [README](../README.md). Esta arquitectura sirve para aprendizaje local; no describe un clúster distribuido listo para producción.

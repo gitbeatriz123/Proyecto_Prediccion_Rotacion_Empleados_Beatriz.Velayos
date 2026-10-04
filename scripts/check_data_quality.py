@@ -100,7 +100,10 @@ def main():
         exit_code = 1
 
     # Check de dominio (Attrition Yes/No) en input1
-    report["checks"]["attrition_domain_input1"] = domain_check_attrition(df1, "Attrition")
+    attrition_domain = domain_check_attrition(df1, "Attrition")
+    report["checks"]["attrition_domain_input1"] = attrition_domain
+    if not attrition_domain["present"] or not attrition_domain["valid"]:
+        exit_code = 1
 
     # Resumen
     report["summary"] = {
