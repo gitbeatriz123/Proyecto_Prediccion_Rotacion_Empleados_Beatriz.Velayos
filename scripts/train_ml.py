@@ -21,11 +21,16 @@ EXCLUDE = {
 def evaluate_probs(y, probs):
     auc = roc_auc_score(y, probs)
     ap  = average_precision_score(y, probs)
-    prec, rec, th = precision_recall_curve(y, probs)
-    f1s = (2*prec*rec) / (prec + rec + 1e-9)
-    best_idx = int(np.nanargmax(f1s))
-    thr_opt = float(th[best_idx-1]) if best_idx > 0 and best_idx-1 < len(th) else 0.5
-    f1_opt  = float(f1s[best_idx])
+    precision, recall, thresholds = precision_recall_curve(y, probs)
+    # precision_recall_curve returns one extra endpoint without a threshold.
+    # Align each candidate threshold with the matching precision/recall entries.
+    f1_by_threshold = (
+        2 * precision[:-1] * recall[:-1]
+        / (precision[:-1] + recall[:-1] + 1e-9)
+    )
+    best_idx = int(np.nanargmax(f1_by_threshold))
+    thr_opt = float(thresholds[best_idx])
+    f1_opt = float(f1_by_threshold[best_idx])
     return float(auc), float(ap), thr_opt, f1_opt
 
 def plot_and_save_curves(y, probs, name, out_plots: Path):

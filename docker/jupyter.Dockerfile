@@ -1,2 +1,4 @@
 FROM jupyter/pyspark-notebook:latest
-RUN pip install --no-cache-dir psycopg2-binary
+
+COPY requirements-ml.txt /tmp/requirements-ml.txt
+RUN python -m pip install --no-cache-dir -r /tmp/requirements-ml.txt
