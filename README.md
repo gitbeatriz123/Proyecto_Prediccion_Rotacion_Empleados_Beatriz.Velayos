@@ -1,16 +1,17 @@
 # Predicción de rotación de empleados
 
-Proyecto educativo de Big Data y analítica de Recursos Humanos desarrollado en un bootcamp. Integra preparación de datos con PySpark, análisis en Jupyter, modelos de clasificación con scikit-learn y un prototipo de dashboard en Power BI.
+Proyecto educativo de Big Data y analítica de Recursos Humanos. Recorre la preparación de datos con PySpark, el análisis en Jupyter, la comparación de modelos con scikit-learn y la presentación de resultados en un prototipo de Power BI.
 
-> **Demostración académica:** utiliza datos de ejemplo y resultados exploratorios. No es un sistema validado para evaluar, seleccionar, retener ni gestionar empleados. No debe ejecutarse con datos de la empresa ni usarse para tomar decisiones sobre personas.
+> **Uso formativo:** los datos y resultados son de demostración y exploratorios. No son una herramienta validada para evaluar, seleccionar, retener ni gestionar empleados, y no deben usarse con datos de una empresa ni para tomar decisiones sobre personas.
 
-## Qué incluye
+## Contenido
 
-- Comprobaciones de calidad y ETL con PySpark.
-- Análisis exploratorio y notebooks reproducibles.
-- Comparación exploratoria de Regresión Logística, Random Forest y MLP.
-- Persistencia de artefactos y resultados en PostgreSQL/CSV.
-- Un prototipo de Power BI y gráficos de referencia recreados a partir de artefactos versionados.
+- Controles de calidad y proceso ETL en PySpark.
+- Notebooks de análisis exploratorio y modelado.
+- Comparación de Regresión Logística, Random Forest y MLP.
+- Persistencia de artefactos y resultados en PostgreSQL y CSV.
+- Memoria y presentación con resultados, explicación de gráficos y límites.
+- Prototipo PBIX y gráficos estáticos de referencia.
 
 **Tecnologías:** Python, PySpark, scikit-learn, Jupyter, Docker Compose, PostgreSQL y Power BI.
 
@@ -18,13 +19,13 @@ Proyecto educativo de Big Data y analítica de Recursos Humanos desarrollado en 
 
 ![Resumen de KPIs del prototipo](docs/powerbi/01_Resumen_KPIs.png)
 
-Las imágenes de [`docs/powerbi/`](docs/powerbi/) son gráficos de referencia recreados con datos y resultados versionados; no son capturas verificadas de Power BI. El PBIX se incluye como prototipo y conviene abrirlo en Power BI para revisar sus visualizaciones antes de interpretarlo.
+La imagen y los PNG de `docs/powerbi/` son gráficos estáticos preparados para mostrar resúmenes en GitHub. No son capturas de la aplicación Power BI ni prueban que se hayan comprobado filtros o interacciones. El archivo PBIX es un prototipo editable: para revisar sus páginas, filtros, relaciones y cifras hay que abrirlo en Power BI Desktop. La presentación incluida contiene gráficos editables con descripciones en castellano.
 
 ## Entregables
 
-- [Prototipo Power BI (PBIX)](bi/Proyecto_Beatriz.pbix)
-- [Presentación educativa (PPTX)](docs/Presentacionfinal_Beatriz_Velayos.pptx)
-- [Memoria del proyecto (PDF)](docs/Memoria_Proyecto_Beatriz.pdf) · [versión HTML](docs/Memoria_Proyecto_Beatriz.html)
+- [Prototipo de Power BI (PBIX)](bi/Panel_Rotacion_Empleados.pbix)
+- [Presentación del proyecto (PPTX)](docs/Presentacion_Proyecto_Rotacion.pptx)
+- [Memoria del proyecto (PDF)](docs/Memoria_Proyecto_Rotacion.pdf) · [versión HTML](docs/Memoria_Proyecto_Rotacion.html)
 - Notebooks de análisis, modelado e informe final en `notebooks/`
 - [Documentación de arquitectura](docs/arquitectura.md)
 
@@ -46,70 +47,71 @@ Requisitos: Docker Engine y Docker Compose v2 (`docker compose`), además de esp
    ```
 
 4. Abre `http://localhost:8889/lab` y pega el token. El token no se guarda en el repositorio.
-5. Genera el Parquet que consumen los notebooks:
-
-   Primero, si quieres regenerar la encuesta sintética con la semilla publicada:
+5. Genera la encuesta sintética si quieres reconstruirla con la semilla publicada:
 
    ```bash
-   docker compose run --rm jupyter python /scripts/generate_demo_survey.py \\
-     --input /data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv \\
+   docker compose run --rm jupyter python /scripts/generate_demo_survey.py \
+     --input /data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv \
      --output /data/raw/encuesta_clima.csv --seed 42
    ```
 
-   Este fichero contiene respuestas aleatorias sintéticas; no procede de una plantilla ni de una encuesta real.
+   Las cinco escalas de la encuesta se asignan al azar. No son respuestas de personas ni mediciones reales de clima.
+
+6. Ejecuta controles de datos y ETL:
 
    ```bash
+   docker compose run --rm jupyter python /scripts/check_data_quality.py \
+     --input1 /data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv \
+     --input2 /data/raw/encuesta_clima.csv \
+     --key EmployeeNumber --max-null-frac 0.25
+
    docker compose run --rm jupyter python /scripts/etl_attrition.py \
      --input1 /data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv \
      --input2 /data/raw/encuesta_clima.csv \
      --outdir /data/processed/employee_attrition.parquet
    ```
 
-6. Abre y ejecuta los notebooks en este orden: `01_EDA_Attrition`, `02_Modelado_Baseline`, `03_Modelado_DL`, `05_Dashboard_KPIs` y `99_Informe_Final`.
-
-   Para recalcular la comparación homogénea de los tres modelos después del ETL:
+7. Entrena los tres modelos y abre los notebooks en este orden: `01_EDA_Attrition`, `02_Modelado_Baseline`, `03_Modelado_DL`, `05_Dashboard_KPIs` y `99_Informe_Final`.
 
    ```bash
-   docker compose run --rm jupyter python /scripts/train_ml.py \\
+   docker compose run --rm jupyter python /scripts/train_ml.py \
      --input /data/processed/employee_attrition.parquet --model all
    ```
 
-   La evaluación usa predicciones out-of-fold de validación cruzada estratificada de cinco particiones. El F1 y el umbral se seleccionan sobre esas mismas predicciones, así que son exploratorios y no una estimación independiente del rendimiento futuro.
+   La comparación emplea predicciones *out-of-fold* de validación cruzada estratificada de cinco particiones. El F1 y el umbral se seleccionan sobre esas mismas predicciones; por ello, son resultados exploratorios y no una estimación independiente del rendimiento futuro.
 
 Para detener los servicios: `docker compose down`. El ETL usa Spark en modo local por defecto; el servicio Spark Master no tiene un Worker configurado.
 
 ## Datos, resultados y límites
 
-El archivo principal `WA_Fn-UseC_-HR-Employee-Attrition.csv` es el conjunto de ejemplo de rotación que se suele distribuir con el nombre IBM HR Analytics Employee Attrition & Performance. IBM usa ese archivo en un tutorial de clasificación, aunque eso no verifica por sí solo la licencia de esta copia. [Referencia del tutorial de IBM](https://developer.ibm.com/caas-storage/skillscollection/dna/live/innovator-predict-employee-turnover-using-ibm-watson-studio/en/_attachments/Build-train-and-evaluate-Machine-Learning-models.pdf).
+El CSV principal se parece al conjunto conocido como IBM HR Analytics Employee Attrition & Performance. Un tutorial de IBM presenta un ejercicio de clasificación de rotación, pero esa referencia no confirma la procedencia exacta ni la licencia de redistribución de la copia incluida aquí. [Consultar el tutorial de IBM](https://developer.ibm.com/caas-storage/skillscollection/dna/live/innovator-predict-employee-turnover-using-ibm-watson-studio/en/_attachments/Build-train-and-evaluate-Machine-Learning-models.pdf).
 
-`encuesta_clima.csv` se genera para este proyecto con `scripts/generate_demo_survey.py`: las cinco escalas se asignan aleatoriamente entre 1 y 5 con semilla fija 42, sin consultar la etiqueta de rotación. Son datos sintéticos reproducibles, no respuestas de personas ni mediciones de una plantilla o empresa. El CSV principal corresponde al conjunto de ejemplo conocido como IBM HR Analytics Employee Attrition & Performance. La referencia del tutorial de IBM identifica un conjunto con ese nombre, pero no verifica la licencia de redistribución de esta copia.
+`encuesta_clima.csv` se genera con `scripts/generate_demo_survey.py`: cinco escalas aleatorias entre 1 y 5, con semilla fija 42 y sin consultar la etiqueta de rotación. No contiene respuestas reales ni una medición observada de clima.
 
-`output/metrics/model_compare.json` se regeneró con el mismo protocolo para los tres modelos: predicciones *out-of-fold* de validación cruzada estratificada de cinco particiones. Las métricas actuales son exploratorias. Para LogReg, Random Forest y MLP, respectivamente, ROC-AUC = 0,819 / 0,810 / 0,768; PR-AUC = 0,552 / 0,532 / 0,484; F1 optimizado = 0,533 / 0,544 / 0,470. El umbral y el F1 se eligen sobre las mismas predicciones OOF, por lo que no son una estimación independiente del rendimiento futuro.
+Las métricas versionadas en `output/metrics/model_compare.json` se calcularon con el mismo esquema OOF para los tres modelos. Regresión Logística, Random Forest y MLP obtienen ROC-AUC de 0,819 / 0,810 / 0,768; PR-AUC de 0,552 / 0,532 / 0,484; y F1 optimizado de 0,533 / 0,544 / 0,470, respectivamente. El umbral y el F1 se seleccionan en las mismas predicciones OOF, lo que introduce optimismo. La memoria explica la lectura de estos resultados y las tasas descriptivas.
 
-La comparación versionada se regeneró en esta revisión usando un Parquet construido localmente con las mismas transformaciones y nombres de columnas del ETL. En este entorno no estaban disponibles Docker Compose ni PySpark, así que no se pudo ejecutar el ETL Spark de extremo a extremo.
+En esta revisión, las métricas se regeneraron usando un Parquet local construido con las transformaciones y nombres de columnas del ETL. Docker Compose y PySpark no estaban disponibles en ese entorno, por lo que no se ejecutó de extremo a extremo la cadena Docker/Spark.
 
-No se ha realizado validación temporal, calibración independiente, análisis formal de equidad ni validación para decisiones laborales. El rendimiento en este dataset de ejemplo no predice el de otra organización. Las métricas versionadas se regeneraron con el código actual. El F1 y el umbral se optimizan sobre las mismas predicciones OOF, por lo que no son una estimación independiente del rendimiento futuro.
+No se hizo validación temporal, calibración independiente, análisis formal de equidad ni validación para decisiones laborales. El rendimiento en este conjunto de ejemplo no predice el de otra organización.
 
 ## Estructura
 
 ```text
 bi/                 Prototipo Power BI
 data/raw/           Datos de entrada del ejercicio
-docs/               Memoria, presentación, informes y capturas
+docs/               Memoria, presentación, arquitectura y gráficos
 notebooks/          Análisis, modelado e informe
 output/             Métricas, modelos y exportaciones de referencia
-scripts/            ETL, comprobaciones y entrenamiento
+scripts/             ETL, comprobaciones y entrenamiento
 docker-compose.yml  Servicios locales
 ```
 
-Los artefactos de `output/` versionados son resultados de referencia reproducibles; vuelve a generarlos si cambias los datos, las dependencias o el código.
+Los artefactos de `output/` son resultados de referencia. Vuelve a generarlos si cambias los datos, el código o las dependencias.
 
 ## Licencia y reutilización
 
-El repositorio no declara una licencia general de reutilización. La encuesta sintética se puede volver a generar desde el script. Verifica las condiciones del conjunto HR de ejemplo antes de redistribuirlo por separado.
+El repositorio no declara una licencia general de reutilización. La encuesta sintética puede regenerarse desde el script. Antes de redistribuir por separado el conjunto HR incluido, verifica las condiciones aplicables a esa copia.
 
 ## Uso responsable
 
-Es un proyecto formativo. Los datos no representan a la empresa de la autora. No introduzcas datos personales, confidenciales o de empleados reales. Un modelo de rotación puede reproducir sesgos y no permite concluir causalidad; cualquier uso laboral requeriría revisión jurídica, de privacidad, equidad y contexto, además de validación independiente.
-
-**Autora:** Beatriz Velayos · Proyecto formativo de Big Data, Machine Learning e Inteligencia Artificial.
+El proyecto es formativo y sus datos no representan a ninguna plantilla real. No introduzcas datos personales, confidenciales o de empleados. Los patrones del conjunto no prueban causalidad. Cualquier estudio con datos laborales reales necesitaría evaluación independiente y revisión de privacidad, sesgo, equidad y contexto.
