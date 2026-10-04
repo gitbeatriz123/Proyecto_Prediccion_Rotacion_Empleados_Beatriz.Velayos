@@ -21,8 +21,8 @@ def parse_args():
     p.add_argument("--input2", required=True, help="Ruta CSV 2 (Encuesta clima)")
     p.add_argument("--key", required=True, help="Clave de unión (ej. EmployeeNumber)")
     p.add_argument("--max-null-frac", type=float, default=0.25, help="Umbral máximo de fracción de nulos por columna")
-    p.add_argument("--spark-master", default=os.getenv("SPARK_MASTER", "spark://spark-master:7077"),
-                   help="URL del Spark master (por defecto lee SPARK_MASTER o spark://spark-master:7077)")
+    p.add_argument("--spark-master", default=os.getenv("SPARK_MASTER", "local[*]"),
+                   help="URL del Spark master (por defecto local[*], lee SPARK_MASTER si está definido)")
     return p.parse_args()
 
 def build_spark(master_url: str) -> SparkSession:
