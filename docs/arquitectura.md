@@ -37,4 +37,4 @@ spark.read.csv("/data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv",
                header=True, inferSchema=True).limit(5).show()
 ```
 
-El proceso ETL y la secuencia completa están descritos en el [README](../README.md).
+El proceso ETL y la secuencia completa están descritos en el [README](../README.md).\n\nLa configuración sensible se toma de `.env` y se ejemplifica en `.env.example`. El esquema inicial de PostgreSQL está en `postgres/init/001_schema.sql`.
