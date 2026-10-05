@@ -73,7 +73,7 @@ def generate(metrics_path, predictions_path, effects_path, output_dir):
     metric_defs = [
         ("roc_auc", "ROC-AUC", COLORS["blue"]),
         ("pr_auc", "PR-AUC", COLORS["mint"]),
-        ("f1_opt", "F1 comparativo", COLORS["gold"]),
+        ("f1_opt", "F1 evaluado", COLORS["gold"]),
     ]
     x = np.arange(len(model_keys))
     width = 0.23
@@ -92,7 +92,7 @@ def generate(metrics_path, predictions_path, effects_path, output_dir):
     ax.legend(ncols=3, loc="upper center", bbox_to_anchor=(0.5, -0.15), frameon=False, fontsize=9)
     fig.subplots_adjust(bottom=0.23, top=0.84)
     finish(fig, output_dir / "01_Resumen_KPIs.png",
-           "Regresión Logística lidera ROC-AUC y PR-AUC; Random Forest logra el F1 más alto. Validación cruzada OOF: cinco particiones.")
+           "Regresión Logística lidera ROC-AUC y PR-AUC; Random Forest logra el F1 más alto. Validación cruzada anidada: cinco folds externos y tres internos.")
 
     # Aggregate OOF scores, observed exits, departments and overtime directly from one file.
     scores = []
@@ -163,7 +163,7 @@ def generate(metrics_path, predictions_path, effects_path, output_dir):
     ax.grid(axis="y", visible=False)
     fig.subplots_adjust(left=0.28, right=0.98, bottom=0.20, top=0.84)
     finish(fig, output_dir / "03_Departamentos_Tasa_Rotacion.png",
-           "Señales OOF al umbral comparativo 0,732. Ventas lidera la tasa e I+D concentra el mayor número de señales.")
+           "Señales OOF al umbral de referencia calculado durante la evaluación anidada. Las señales son prioritarias para análisis, no decisiones automáticas.")
 
     # 4. Overtime: compare the observed rates and denominators.
     overtime_names = {"No": "Sin horas extra", "Yes": "Con horas extra"}
