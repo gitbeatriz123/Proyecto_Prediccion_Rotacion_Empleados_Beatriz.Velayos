@@ -31,17 +31,13 @@ jobs:
           python scripts/generate_synthetic_survey.py             --input data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv             --output data/raw/encuesta_clima.csv             --seed 42
 
       - name: Quality checks
-        run: |
-          python scripts/check_data_quality.py             --input1 data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv             --input2 data/raw/encuesta_clima.csv             --key EmployeeNumber             --max-null-frac 0.25
-
+        run: python scripts/check_data_quality.py --input1 data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv --input2 data/raw/encuesta_clima.csv --key EmployeeNumber --max-null-frac 0.25 --outdir output/metrics
       - name: ETL
         run: |
           python scripts/etl_attrition.py             --input1 data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv             --input2 data/raw/encuesta_clima.csv             --outdir data/processed/employee_attrition.parquet
 
       - name: Train canonical models
-        run: |
-          python scripts/train_ml.py             --input data/processed/employee_attrition.parquet             --model all
-
+        run: python scripts/train_ml.py --input data/processed/employee_attrition.parquet --model all --outdir_models output/models --outdir_metrics output/metrics --outdir_plots output/plots --outdir_bi output/bi
       - name: Run tests
         run: python -m pytest -q
 
