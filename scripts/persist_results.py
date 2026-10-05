@@ -22,13 +22,15 @@ def main():
     X  = df.drop(columns=["attrition_label"])
     emp = df["EmployeeNumber"].values if "EmployeeNumber" in df.columns else np.arange(len(df))
 
-    pipe  = joblib.load(a.model)
+    artifact = joblib.load(a.model)
+    pipe = artifact["pipeline"] if isinstance(artifact, dict) and "pipeline" in artifact else artifact
+    artifact_threshold = artifact.get("threshold") if isinstance(artifact, dict) else None
     probs = pipe.predict_proba(X)[:, 1]
 
     # Umbral desde JSON
     compare = json.loads(Path(a.metrics_json).read_text())
     m = compare.get(a.model_name, {})
-    thr = float(m.get("thr_opt", 0.5))
+    thr = float(artifact_threshold if artifact_threshold is not None else m.get("thr_opt", 0.5))
     preds = (probs >= thr).astype(int)
 
     # Conexión
