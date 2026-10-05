@@ -54,6 +54,20 @@ def main():
     """, rows)
     conn.commit()
 
+    # Persistir efectos del modelo cuando el artefacto los haya generado.
+    effects_path = Path("/output/bi/feature_effects.csv")
+    if a.model_name == "LogReg" and effects_path.exists():
+        effects = pd.read_csv(effects_path)
+        value_col = "effect" if "effect" in effects.columns else ("importance" if "importance" in effects.columns else None)
+        if value_col:
+            cur.execute("DELETE FROM feature_effects WHERE model_name=%s", (a.model_name,))
+            effect_rows = [(str(r["feature"]), float(r[value_col]), a.model_name) for _, r in effects.iterrows()]
+            cur.executemany(
+                "INSERT INTO feature_effects(feature, value, model_name) VALUES (%s,%s,%s)",
+                effect_rows,
+            )
+            conn.commit()
+
     cur.close(); conn.close()
     print(f"Persistido en Postgres: {a.model_name} -> {len(rows)} predicciones (thr={thr:.3f})")
 
