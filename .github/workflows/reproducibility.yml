@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
 
+env:
+  OUTPUT_METRICS_DIR: output/metrics
+
 jobs:
   pipeline:
     runs-on: ubuntu-latest
