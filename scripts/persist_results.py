@@ -1,4 +1,4 @@
-import argparse, json, joblib, numpy as np, pandas as pd
+import argparse, json, joblib, numpy as np, pandas as pd\nimport os
 from pathlib import Path
 
 # pip install psycopg2-binary ya ejecutado en el contenedor jupyter
@@ -10,10 +10,10 @@ def main():
     ap.add_argument("--model", required=True)          # ruta del pipeline .pkl
     ap.add_argument("--model_name", required=True)     # LogReg | RF | ...
     ap.add_argument("--metrics_json", required=True)   # /output/metrics/model_compare.json
-    ap.add_argument("--pg_host", default="postgres")
-    ap.add_argument("--pg_db",   default="postgres")
-    ap.add_argument("--pg_user", default="postgres")
-    ap.add_argument("--pg_pass", default="postgres")
+    ap.add_argument("--pg_host", default=os.getenv("POSTGRES_HOST", "postgres"))
+    ap.add_argument("--pg_db",   default=os.getenv("POSTGRES_DB", "mlops"))
+    ap.add_argument("--pg_user", default=os.getenv("POSTGRES_USER", "ml"))
+    ap.add_argument("--pg_pass", default=os.getenv("POSTGRES_PASSWORD", "ml"))
     a = ap.parse_args()
 
     # Carga datos y modelo
