@@ -1,4 +1,4 @@
-import argparse, json, joblib, numpy as np, pandas as pd
+import argparse, json, joblib, numpy as np, pandas as pd\nimport os
 from pathlib import Path
 
 # pip install psycopg2-binary ya ejecutado en el contenedor jupyter
@@ -10,10 +10,10 @@ def main():
     ap.add_argument("--model", required=True)          # ruta del pipeline .pkl
     ap.add_argument("--model_name", required=True)     # LogReg | RF | ...
     ap.add_argument("--metrics_json", required=True)   # /output/metrics/model_compare.json
-    ap.add_argument("--pg_host", default="postgres")
-    ap.add_argument("--pg_db",   default="postgres")
-    ap.add_argument("--pg_user", default="postgres")
-    ap.add_argument("--pg_pass", default="postgres")
+    ap.add_argument("--pg_host", default=os.getenv("POSTGRES_HOST", "postgres"))
+    ap.add_argument("--pg_db",   default=os.getenv("POSTGRES_DB", "mlops"))
+    ap.add_argument("--pg_user", default=os.getenv("POSTGRES_USER", "ml"))
+    ap.add_argument("--pg_pass", default=os.getenv("POSTGRES_PASSWORD", "ml"))
     a = ap.parse_args()
 
     # Carga datos y modelo
@@ -22,13 +22,15 @@ def main():
     X  = df.drop(columns=["attrition_label"])
     emp = df["EmployeeNumber"].values if "EmployeeNumber" in df.columns else np.arange(len(df))
 
-    pipe  = joblib.load(a.model)
+    artifact = joblib.load(a.model)
+    pipe = artifact["pipeline"] if isinstance(artifact, dict) and "pipeline" in artifact else artifact
+    artifact_threshold = artifact.get("threshold") if isinstance(artifact, dict) else None
     probs = pipe.predict_proba(X)[:, 1]
 
     # Umbral desde JSON
     compare = json.loads(Path(a.metrics_json).read_text())
     m = compare.get(a.model_name, {})
-    thr = float(m.get("thr_opt", 0.5))
+    thr = float(artifact_threshold if artifact_threshold is not None else m.get("thr_opt", 0.5))
     preds = (probs >= thr).astype(int)
 
     # Conexión

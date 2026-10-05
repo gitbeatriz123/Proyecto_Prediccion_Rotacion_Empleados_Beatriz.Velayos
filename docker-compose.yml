@@ -1,20 +1,25 @@
 services:
   postgres:
-    image: postgres:15
+    image: postgres:15.8
     container_name: postgres-rotacion
     environment:
-      POSTGRES_USER: ml
-      # Credencial local de PostgreSQL para las conexiones del entorno.
-      POSTGRES_PASSWORD: ml
-      POSTGRES_DB: mlops
+      POSTGRES_USER: ${POSTGRES_USER:-ml}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ml}
+      POSTGRES_DB: ${POSTGRES_DB:-mlops}
     ports:
-      - "127.0.0.1:5442:5432"
+      - "127.0.0.1:${POSTGRES_PORT:-5442}:5432"
     volumes:
       - ./postgres:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     restart: unless-stopped
 
   spark-master:
-    image: bitnami/spark:3.5
+    image: bitnami/spark:3.5.0
     container_name: spark-master
     environment:
       - SPARK_MODE=master
@@ -23,8 +28,8 @@ services:
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
     ports:
-      - "127.0.0.1:7077:7077"   # Spark master RPC, solo local
-      - "127.0.0.1:8080:8080"   # Spark master UI, solo local
+      - "127.0.0.1:${SPARK_RPC_PORT:-7077}:7077"
+      - "127.0.0.1:${SPARK_UI_PORT:-8080}:8080"
     restart: unless-stopped
 
   jupyter:
@@ -33,7 +38,7 @@ services:
       dockerfile: docker/jupyter.Dockerfile
     container_name: jupyter-rotacion
     ports:
-      - "127.0.0.1:8889:8888"   # http://localhost:8889, solo local
+      - "127.0.0.1:${JUPYTER_PORT:-8889}:8888"
     volumes:
       - ./scripts:/scripts
       - ./data:/data
@@ -41,6 +46,8 @@ services:
       - ./notebooks:/home/jovyan/work
       - ./docs/powerbi:/docs/powerbi
     depends_on:
-      - postgres
-      - spark-master
+      postgres:
+        condition: service_healthy
+      spark-master:
+        condition: service_started
     restart: unless-stopped

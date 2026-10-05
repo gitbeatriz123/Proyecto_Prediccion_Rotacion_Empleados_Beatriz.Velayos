@@ -1,8 +1,8 @@
-import argparse, pandas as pd, numpy as np, psycopg2
+import argparse, os, pandas as pd, numpy as np, psycopg2
 from psycopg2.extras import execute_values
 ap=argparse.ArgumentParser()
-ap.add_argument("--input",required=True); ap.add_argument("--pg_host",default="postgres")
-ap.add_argument("--pg_db",default="mlops"); ap.add_argument("--pg_user",default="ml"); ap.add_argument("--pg_pass",default="ml")
+ap.add_argument("--input",required=True); ap.add_argument("--pg_host",default=os.getenv("POSTGRES_HOST","postgres"))
+ap.add_argument("--pg_db",default=os.getenv("POSTGRES_DB","mlops")); ap.add_argument("--pg_user",default=os.getenv("POSTGRES_USER","ml")); ap.add_argument("--pg_pass",default=os.getenv("POSTGRES_PASSWORD","ml"))
 a=ap.parse_args()
 df=pd.read_parquet(a.input)
 cols=["EmployeeNumber","Department","JobRole","Gender","Age","MonthlyIncome","YearsAtCompany","OverTime",
