@@ -38,7 +38,7 @@ services:
       dockerfile: docker/jupyter.Dockerfile
     container_name: jupyter-rotacion
     ports:
-      - "127.0.0.1:$${JUPYTER_PORT:-8889}:8888"
+      - "127.0.0.1:${JUPYTER_PORT:-8889}:8888"
     volumes:
       - ./scripts:/scripts
       - ./data:/data
