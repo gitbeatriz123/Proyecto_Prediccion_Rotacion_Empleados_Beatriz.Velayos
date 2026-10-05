@@ -78,6 +78,8 @@ docker compose run --rm jupyter python /scripts/persist_results.py \
 
 ## Notebooks
 
+Para regenerar sus HTML desde cero: `bash scripts/export_notebooks.sh`.
+
 Los notebooks explican el análisis y sirven como material educativo. `02_Modelado_Baseline` y `03_Modelado_DL` mantienen sus comparativas exploratorias separadas y no deben sobrescribir la comparativa canónica.
 
 ## Dashboard
