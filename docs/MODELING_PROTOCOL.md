@@ -25,3 +25,14 @@ El 'threshold_reference' que aparece en los artefactos es la mediana de los umbr
 ## Interpretación
 
 Los coeficientes de Regresión Logística representan asociaciones condicionadas por el conjunto de variables y su codificación. No deben describirse como efectos causales.
+
+
+## Separación entre evaluación y operación
+
+Las métricas ROC-AUC, PR-AUC y F1 evaluado proceden exclusivamente de predicciones del fold externo. Las predicciones que se persisten en PostgreSQL para el dashboard son, en cambio, las predicciones del pipeline final ajustado con todos los registros. Por tanto, el panel sirve para operación/segmentación sobre el modelo final y no debe interpretarse como una segunda estimación independiente del rendimiento.
+
+El umbral de referencia se utiliza para generar señales del modelo final y para la visualización. Las cifras de señales obtenidas durante la evaluación OOF se etiquetan como métricas de evaluación y no se mezclan con las señales operativas del dashboard.
+
+## Encuesta sintética
+
+Todas las columnas `survey_*` se excluyen del entrenamiento. Su única finalidad es demostrar integración de fuentes y disponibilidad de campos para el flujo de datos/BI.
