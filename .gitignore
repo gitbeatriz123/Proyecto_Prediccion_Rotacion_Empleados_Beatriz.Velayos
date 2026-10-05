@@ -15,3 +15,6 @@ postgres/
 *.swp
 docs/*_src.pdf
 *.zip
+
+# Configuración local
+.env
