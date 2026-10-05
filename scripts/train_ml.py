@@ -55,29 +55,36 @@ def save_curves(y, probs, name, plots_dir):
 def nested_oof(pipe, X, y):
     outer = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
     probs = np.empty(len(y), dtype=float)
-    thresholds = []
-    for train_idx, test_idx in outer.split(X, y):
+    fold_thresholds = np.empty(outer.n_splits, dtype=float)
+    fold_f1 = np.empty(outer.n_splits, dtype=float)
+    fold_metrics = []
+    for fold_id, (train_idx, test_idx) in enumerate(outer.split(X, y), start=1):
         X_train, X_test = X.iloc[train_idx], X.iloc[test_idx]
         y_train, y_test = y[train_idx], y[test_idx]
         inner = StratifiedKFold(n_splits=3, shuffle=True, random_state=42)
         inner_probs = cross_val_predict(pipe, X_train, y_train, cv=inner, method="predict_proba", n_jobs=1)[:, 1]
         threshold, _ = select_threshold(y_train, inner_probs)
-        thresholds.append(threshold)
+        fold_thresholds[fold_id - 1] = threshold
         pipe.fit(X_train, y_train)
-        probs[test_idx] = pipe.predict_proba(X_test)[:, 1]
-    return probs, np.asarray(thresholds)
+        test_probs = pipe.predict_proba(X_test)[:, 1]
+        probs[test_idx] = test_probs
+        fold_f1[fold_id - 1] = f1_score(y_test, (test_probs >= threshold).astype(int), zero_division=0)
+        fold_metrics.append({"fold": fold_id, "threshold": float(threshold), "f1": float(fold_f1[fold_id - 1]), "n_test": int(len(test_idx))})
+    return probs, fold_thresholds, fold_f1, fold_metrics
 
-def evaluate_probs(y, probs, threshold_reference):
+def evaluate_probs(y, probs, threshold_reference, fold_f1, fold_metrics):
     pred = (probs >= threshold_reference).astype(int)
     pred05 = (probs >= 0.5).astype(int)
     return {
         "roc_auc": float(roc_auc_score(y, probs)),
         "pr_auc": float(average_precision_score(y, probs)),
-        "f1_opt": float(f1_score(y, pred, zero_division=0)),
+        "f1_opt": float(np.mean(fold_f1)),
+        "f1_opt_std": float(np.std(fold_f1, ddof=1)),
         "thr_opt": float(threshold_reference),
         "accuracy_at_0_5": float(accuracy_score(y, pred05)),
         "f1_at_0_5": float(f1_score(y, pred05, zero_division=0)),
         "protocol": "nested_5fold_outer_3fold_inner_threshold_selection",
+        "fold_metrics": fold_metrics,
     }
 
 def train_one(model_name, df, model_dir, metric_dir, plot_dir, bi_dir):
@@ -87,9 +94,9 @@ def train_one(model_name, df, model_dir, metric_dir, plot_dir, bi_dir):
     numeric = X.select_dtypes(include=[np.number, "Int64", "Float64", "boolean", "bool"]).columns.tolist()
     categorical = [c for c in X.columns if c not in numeric]
     pipe, label = make_pipeline(model_name, numeric, categorical)
-    probs, thresholds = nested_oof(pipe, X, y)
+    probs, thresholds, fold_f1, fold_metrics = nested_oof(pipe, X, y)
     threshold_reference = float(np.median(thresholds))
-    metrics = evaluate_probs(y, probs, threshold_reference)
+    metrics = evaluate_probs(y, probs, threshold_reference, fold_f1, fold_metrics)
     metrics["threshold_reference"] = threshold_reference
     metrics["threshold_selection"] = [float(x) for x in thresholds]
     save_curves(y, probs, label, plot_dir)
