@@ -3,16 +3,16 @@ services:
     image: postgres:15.8
     container_name: postgres-rotacion
     environment:
-      POSTGRES_USER: $${POSTGRES_USER:-ml}
-      POSTGRES_PASSWORD: $${POSTGRES_PASSWORD:-ml}
-      POSTGRES_DB: $${POSTGRES_DB:-mlops}
+      POSTGRES_USER: ${POSTGRES_USER:-ml}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ml}
+      POSTGRES_DB: ${POSTGRES_DB:-mlops}
     ports:
-      - "127.0.0.1:$${POSTGRES_PORT:-5442}:5432"
+      - "127.0.0.1:${POSTGRES_PORT:-5442}:5432"
     volumes:
       - ./postgres:/var/lib/postgresql/data
       - ./postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER:-ml} -d $${POSTGRES_DB:-mlops}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ml} -d ${POSTGRES_DB:-mlops}"]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -28,8 +28,8 @@ services:
       - SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED=no
       - SPARK_SSL_ENABLED=no
     ports:
-      - "127.0.0.1:$${SPARK_RPC_PORT:-7077}:7077"
-      - "127.0.0.1:$${SPARK_UI_PORT:-8080}:8080"
+      - "127.0.0.1:${SPARK_RPC_PORT:-7077}:7077"
+      - "127.0.0.1:${SPARK_UI_PORT:-8080}:8080"
     restart: unless-stopped
 
   jupyter:
