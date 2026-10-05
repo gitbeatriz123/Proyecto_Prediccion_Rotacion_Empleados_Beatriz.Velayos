@@ -1,0 +1,32 @@
+{
+  "LogReg": {
+    "roc_auc": 0.8225178888580903,
+    "pr_auc": 0.5753297837580837,
+    "f1_opt": 0.5416443235910333,
+    "f1_opt_std": 0.05916085800751938,
+    "thr_opt": 0.7061433278389575,
+    "accuracy_at_0_5": 0.7476190476190476,
+    "f1_at_0_5": 0.4722617354196302,
+    "protocol": "nested_5fold_outer_3fold_inner_threshold_selection"
+  },
+  "RF": {
+    "roc_auc": 0.8027657149896823,
+    "pr_auc": 0.540439966767572,
+    "f1_opt": 0.5234085347096432,
+    "f1_opt_std": 0.03731709669419057,
+    "thr_opt": 0.25666666666666665,
+    "accuracy_at_0_5": 0.8551020408163266,
+    "f1_at_0_5": 0.24199288256227758,
+    "protocol": "nested_5fold_outer_3fold_inner_threshold_selection"
+  },
+  "MLP": {
+    "roc_auc": 0.8140003627391599,
+    "pr_auc": 0.5590435261654663,
+    "f1_opt": 0.5217703004515739,
+    "f1_opt_std": 0.05803230234012215,
+    "thr_opt": 0.3160704961149542,
+    "accuracy_at_0_5": 0.8680272108843538,
+    "f1_at_0_5": 0.4581005586592179,
+    "protocol": "nested_5fold_outer_3fold_inner_threshold_selection"
+  }
+}
