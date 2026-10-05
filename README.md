@@ -57,7 +57,7 @@ docker compose run --rm jupyter python /scripts/train_ml.py \
 docker compose run --rm jupyter python /scripts/render_dashboard_previews.py
 ```
 
-La evaluación usa 5 folds externos y 3 folds internos para seleccionar el umbral. Las métricas finales se generan de nuevo con `scripts/train_ml.py`; no se deben copiar como definitivos los valores históricos de versiones anteriores.
+La evaluación usa 5 folds externos y 3 folds internos para seleccionar el umbral. Las variables `survey_*` son sintéticas y se excluyen del entrenamiento; su finalidad es demostrar integración de fuentes. Las métricas finales se generan de nuevo con `scripts/train_ml.py`; no se deben copiar como definitivos los valores históricos de versiones anteriores.
 
 ## PostgreSQL
 
