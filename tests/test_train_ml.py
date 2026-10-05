@@ -15,7 +15,8 @@ def test_redundant_engineered_columns_are_excluded():
         "Age": [30, 40],
         "survey_satisfaction": [1, 5],
     })
-    features = df.drop(columns=[c for c in df.columns if c in EXCLUDE])
+    model_exclude = set(EXCLUDE) | {c for c in df.columns if c.startswith("survey_")}
+    features = df.drop(columns=[c for c in df.columns if c in model_exclude])
     assert "income_yearly" not in features.columns
     assert "overtime_flag" not in features.columns
     assert "MonthlyIncome" in features.columns
