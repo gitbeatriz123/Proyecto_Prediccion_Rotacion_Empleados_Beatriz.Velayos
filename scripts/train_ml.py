@@ -90,7 +90,8 @@ def evaluate_probs(y, probs, threshold_reference, fold_f1, fold_metrics):
 def train_one(model_name, df, model_dir, metric_dir, plot_dir, bi_dir):
     y = df["attrition_label"].astype(int).to_numpy()
     ids = df["EmployeeNumber"].to_numpy() if "EmployeeNumber" in df else np.arange(len(df))
-    X = df.drop(columns=[c for c in df.columns if c in EXCLUDE])
+    model_exclude = set(EXCLUDE) | {c for c in df.columns if c.startswith("survey_")}
+    X = df.drop(columns=[c for c in df.columns if c in model_exclude])
     numeric = X.select_dtypes(include=[np.number, "Int64", "Float64", "boolean", "bool"]).columns.tolist()
     categorical = [c for c in X.columns if c not in numeric]
     pipe, label = make_pipeline(model_name, numeric, categorical)
