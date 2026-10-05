@@ -13,12 +13,14 @@ def test_redundant_engineered_columns_are_excluded():
         "overtime_flag": [1, 0],
         "attrition_label": [1, 0],
         "Age": [30, 40],
+        "survey_satisfaction": [1, 5],
     })
     features = df.drop(columns=[c for c in df.columns if c in EXCLUDE])
     assert "income_yearly" not in features.columns
     assert "overtime_flag" not in features.columns
     assert "MonthlyIncome" in features.columns
     assert "OverTime" in features.columns
+    assert "survey_satisfaction" not in features.columns
 
 
 def test_threshold_is_selected_from_training_data_only():
