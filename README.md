@@ -2,7 +2,7 @@
 
 Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra preparación de datos con PySpark, modelado con scikit-learn y visualización en Power BI. Los resultados se interpretan para una empresa hipotética y sus áreas de negocio.
 
-## Alcance
+## Alcance\n\n> **Uso educativo:** los datos y resultados son demostrativos. No están validados para evaluar, seleccionar, retener ni gestionar personas.
 
 - Control de calidad e integración de dos ficheros tabulares mediante un proceso ETL con PySpark.
 - Análisis exploratorio y comparación de Regresión Logística, Random Forest y MLP.
@@ -29,7 +29,7 @@ Los gráficos de `docs/powerbi/` resumen indicadores y resultados. El PBIX conti
 
 El CSV principal reúne 1.470 registros y 35 variables sobre características laborales y rotación. La memoria incluye una referencia de contexto de IBM sobre clasificación de rotación. El fichero `encuesta_clima.csv` se construye mediante `scripts/generate_synthetic_survey.py`: asigna cinco escalas aleatorias de 1 a 5 con semilla 42, sin consultar Attrition, y permite reproducir la unión y el proceso ETL.
 
-La evaluación compara tres clasificadores mediante validación cruzada estratificada de cinco particiones y puntuaciones *out-of-fold* (OOF). Regresión Logística alcanza ROC-AUC 0,819 y PR-AUC 0,552; Random Forest obtiene el mayor F1 comparativo (0,544). El umbral de Regresión Logística usado para ordenar las señales agregadas es 0,732: en las predicciones OOF aparecen 104 señales en Ventas, 115 en Investigación y Desarrollo y 9 en Recursos Humanos, 228 en total. Estos recuentos se leen junto con las tasas observadas y el tamaño de cada área.
+La evaluación canónica compara tres clasificadores mediante validación cruzada anidada: cinco particiones externas y tres internas para seleccionar el umbral. Los valores definitivos se regeneran con `scripts/train_ml.py --model all`; las cifras históricas de versiones anteriores no deben reutilizarse como métricas finales. Estos recuentos se leen junto con las tasas observadas y el tamaño de cada área.
 
 Los archivos de `output/` contienen métricas, modelos, gráficos y exportaciones asociadas a los datos incluidos. Las instrucciones siguientes permiten regenerar la encuesta, reconstruir el ETL y volver a calcular los resultados. Las figuras de docs/powerbi/ se regeneran desde estas salidas con scripts/render_dashboard_previews.py.
 
@@ -73,7 +73,7 @@ Requisitos: Docker Engine y Docker Compose v2 (`docker compose`), además de esp
      --outdir /data/processed/employee_attrition.parquet
    ```
 
-7. Entrena los modelos y, si deseas recorrer el análisis, abre los notebooks en este orden: `01_EDA_Attrition`, `02_Modelado_Baseline`, `03_Modelado_DL`, `05_Dashboard_KPIs` y `99_Informe_Final`.
+7. Entrena los modelos con la ruta canónica. Los notebooks son material explicativo y no deben sustituir este paso. `02_Modelado_Baseline` y `03_Modelado_DL` generan comparativas exploratorias separadas.
 
    ```bash
    docker compose run --rm jupyter python /scripts/train_ml.py \
@@ -109,4 +109,4 @@ docker-compose.yml  Servicios locales
 
 ## Licencia y reutilización
 
-El repositorio no declara una licencia general de reutilización. Antes de redistribuir por separado el conjunto HR incluido, consulta las condiciones aplicables a esa copia. La encuesta sintética puede regenerarse con el script y la semilla documentada.
+La procedencia y las limitaciones de los datos están documentadas en `docs/DATA_SOURCE.md`.\n\nEl repositorio no declara una licencia general de reutilización. Antes de redistribuir por separado el conjunto HR incluido, consulta las condiciones aplicables a esa copia. La encuesta sintética puede regenerarse con el script y la semilla documentada.
