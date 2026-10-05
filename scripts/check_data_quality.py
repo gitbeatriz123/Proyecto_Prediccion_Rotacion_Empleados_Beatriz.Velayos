@@ -21,6 +21,7 @@ def parse_args():
     p.add_argument("--input2", required=True, help="Ruta CSV 2 (Encuesta clima)")
     p.add_argument("--key", required=True, help="Clave de unión (ej. EmployeeNumber)")
     p.add_argument("--max-null-frac", type=float, default=0.25, help="Umbral máximo de fracción de nulos por columna")
+    p.add_argument("--outdir", default=os.getenv("OUTPUT_METRICS_DIR", "/output/metrics"), help="Directorio de salida de métricas")
     p.add_argument("--spark-master", default=os.getenv("SPARK_MASTER", "local[*]"),
                    help="URL del Spark master (por defecto local[*], lee SPARK_MASTER si está definido)")
     return p.parse_args()
@@ -117,7 +118,7 @@ def main():
     }
 
     # Guardar informe
-    out_dir = "/output/metrics"
+    out_dir = args.outdir
     os.makedirs(out_dir, exist_ok=True)
     out_path = os.path.join(out_dir, "quality_report.json")
     with open(out_path, "w", encoding="utf-8") as f:
