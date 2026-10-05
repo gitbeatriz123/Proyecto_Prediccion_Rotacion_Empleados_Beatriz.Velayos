@@ -169,7 +169,7 @@ def write_parquet(df, outdir):
 
 
 def save_metrics(df, outdir):
-    out_metrics = "/output/metrics/etl_metrics.json"
+    out_metrics = os.path.join(os.getenv("OUTPUT_METRICS_DIR", "/output/metrics"), "etl_metrics.json")
     rows = df.count()
     pos = df.filter(F.col("attrition_label") == 1).count() if "attrition_label" in df.columns else None
     rate = (pos / rows) if (pos is not None and rows > 0) else None
