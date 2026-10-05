@@ -18,7 +18,7 @@ Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra prepara
 
 - [Panel de Power BI](bi/Panel_Rotacion_Empleados.pbix)
 - [Presentación del proyecto](docs/Presentacion_Proyecto_Rotacion.pptx)
-- [Memoria del proyecto (PDF)](docs/Memoria_Proyecto_Rotacion.pdf) · [versión HTML](docs/Memoria_Proyecto_Rotacion.html)
+- [Memoria del proyecto (PDF)](docs/Memoria_Proyecto_Beatriz.pdf) · [versión HTML](docs/Memoria_Proyecto_Beatriz.html)
 - Notebooks de análisis y documentación en `notebooks/`
 - [Arquitectura](docs/arquitectura.md)
 - [Procedencia de datos](docs/DATA_SOURCE.md)
