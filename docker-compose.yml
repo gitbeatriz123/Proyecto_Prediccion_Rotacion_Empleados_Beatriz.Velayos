@@ -12,7 +12,7 @@ services:
       - ./postgres:/var/lib/postgresql/data
       - ./postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-ml} -d ${POSTGRES_DB:-mlops}"]
+      test: ["CMD-SHELL", "pg_isready -U ml -d mlops"]
       interval: 5s
       timeout: 5s
       retries: 10
