@@ -54,10 +54,25 @@ docker compose run --rm jupyter python /scripts/etl_attrition.py \
 docker compose run --rm jupyter python /scripts/train_ml.py \
   --input /data/processed/employee_attrition.parquet --model all
 
+docker compose run --rm jupyter python /scripts/load_features_to_pg.py \
+  --input /data/processed/employee_attrition.parquet
+
+for MODEL in LogReg RF MLP; do
+  case "$MODEL" in
+    LogReg) ART="/output/models/logreg_pipeline.pkl" ;;
+    RF) ART="/output/models/rf_pipeline.pkl" ;;
+    MLP) ART="/output/models/mlp_pipeline.pkl" ;;
+  esac
+  docker compose run --rm jupyter python /scripts/persist_results.py \
+    --input /data/processed/employee_attrition.parquet \
+    --model "$ART" --model_name "$MODEL" \
+    --metrics_json /output/metrics/model_compare.json
+done
+
 docker compose run --rm jupyter python /scripts/render_dashboard_previews.py
 ```
 
-La evaluación usa 5 folds externos y 3 folds internos para seleccionar el umbral. Las variables `survey_*` son sintéticas y se excluyen del entrenamiento; su finalidad es demostrar integración de fuentes. Las métricas finales se generan de nuevo con `scripts/train_ml.py`; no se deben copiar como definitivos los valores históricos de versiones anteriores.
+La evaluación usa 5 folds externos y 3 folds internos para seleccionar el umbral. Las variables `survey_*` son sintéticas y se excluyen del entrenamiento; su finalidad es demostrar integración de fuentes. Las métricas finales se generan de nuevo con `scripts/train_ml.py`. La persistencia posterior alimenta las tablas y vistas que utiliza el PBIX. No se deben copiar como definitivos valores históricos de versiones anteriores.
 
 ## PostgreSQL
 
