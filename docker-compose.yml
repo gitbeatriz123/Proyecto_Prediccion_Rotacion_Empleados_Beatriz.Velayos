@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
 
   spark-master:
-    image: bitnami/spark:3.5.6
+    image: bitnami/spark:3.5.0
     container_name: spark-master
     environment:
       - SPARK_MODE=master
