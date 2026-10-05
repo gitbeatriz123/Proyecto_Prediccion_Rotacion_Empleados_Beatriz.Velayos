@@ -1,0 +1,59 @@
+name: Reproducibility
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-ml.txt pyspark==3.5.0
+
+      - name: Generate synthetic survey
+        run: |
+          python scripts/generate_synthetic_survey.py             --input data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv             --output data/raw/encuesta_clima.csv             --seed 42
+
+      - name: Quality checks
+        run: |
+          python scripts/check_data_quality.py             --input1 data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv             --input2 data/raw/encuesta_clima.csv             --key EmployeeNumber             --max-null-frac 0.25
+
+      - name: ETL
+        run: |
+          python scripts/etl_attrition.py             --input1 data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv             --input2 data/raw/encuesta_clima.csv             --outdir data/processed/employee_attrition.parquet
+
+      - name: Train canonical models
+        run: |
+          python scripts/train_ml.py             --input data/processed/employee_attrition.parquet             --model all
+
+      - name: Run tests
+        run: python -m pytest -q
+
+      - name: Render dashboard previews
+        run: python scripts/render_dashboard_previews.py
+
+      - name: Print final metrics
+        run: cat output/metrics/model_compare.json
+
+      - name: Upload reproducibility artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: reproducibility-output
+          path: |
+            output/metrics/*.json
+            output/bi/*.csv
+            output/plots/*.png
+            docs/powerbi/*.png
