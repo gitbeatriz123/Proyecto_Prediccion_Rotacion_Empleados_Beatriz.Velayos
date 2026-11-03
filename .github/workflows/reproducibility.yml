@@ -37,7 +37,7 @@ jobs:
           python scripts/etl_attrition.py             --input1 data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv             --input2 data/raw/encuesta_clima.csv             --outdir data/processed/employee_attrition.parquet
 
       - name: Train canonical models
-        run: python scripts/train_ml.py --input data/processed/employee_attrition.parquet --model all --outdir_models output/models --outdir_metrics output/metrics --outdir_plots output/plots --outdir_bi output/bi
+        run: python scripts/train_ml.py --input data/processed/employee_attrition.parquet --model all --outdir_models output/models --outdir_metrics output/metrics --outdir_plots output/plots --outdir_dashboard output/dashboard
       - name: Run tests
         run: python -m pytest -q
 
@@ -53,6 +53,6 @@ jobs:
           name: reproducibility-output
           path: |
             output/metrics/*.json
-            output/bi/*.csv
+            output/dashboard/*.csv
             output/plots/*.png
-            docs/powerbi/*.png
+            docs/panel/*.png

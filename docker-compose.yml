@@ -44,7 +44,7 @@ services:
       - ./data:/data
       - ./output:/output
       - ./notebooks:/home/jovyan/work
-      - ./docs/powerbi:/docs/powerbi
+      - ./docs/panel:/docs/panel
     depends_on:
       postgres:
         condition: service_healthy

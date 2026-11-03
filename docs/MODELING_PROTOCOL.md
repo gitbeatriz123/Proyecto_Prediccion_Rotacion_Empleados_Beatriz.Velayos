@@ -2,13 +2,13 @@
 
 ## Pipeline canónico
 
-La ruta oficial del proyecto es 'scripts/train_ml.py'. Los notebooks sirven como material explicativo y exploratorio; no deben sobrescribir 'output/metrics/model_compare.json' ni sustituir al script canónico.
+La ruta oficial del proyecto es `scripts/train_ml.py`. Los notebooks sirven como material explicativo y exploratorio; no deben sobrescribir `output/metrics/model_compare.json` ni sustituir el script canónico.
 
 ## Variables
 
-El ETL conserva 'income_yearly' y 'overtime_flag' para facilitar análisis y persistencia en BI. Sin embargo, ambas son transformaciones deterministas de variables ya presentes ('MonthlyIncome' y 'OverTime') y se excluyen del entrenamiento para evitar duplicidad de información.
+El ETL conserva `income_yearly` y `overtime_flag` para facilitar análisis descriptivos y persistencia. Ambas son transformaciones deterministas de variables ya presentes (`MonthlyIncome` y `OverTime`) y se excluyen del entrenamiento para evitar duplicidad de información.
 
-La columna 'Attrition' se transforma en 'attrition_label' y después se elimina antes del modelado.
+La columna `Attrition` se transforma en `attrition_label` y después se elimina antes del modelado. Las columnas `survey_*` se conservan para demostrar la integración de fuentes, pero también se excluyen del entrenamiento.
 
 ## Evaluación
 
@@ -26,13 +26,12 @@ El `threshold_reference` es la mediana de los cinco umbrales seleccionados media
 
 Los coeficientes de Regresión Logística representan asociaciones condicionadas por el conjunto de variables y su codificación. No deben describirse como efectos causales.
 
+## Separación entre evaluación y predicciones persistidas
 
-## Separación entre evaluación y operación
+El panel HTML presenta las métricas calculadas sobre predicciones OOF, las tasas observadas, los recuentos de señales OOF y los factores asociados en apartados separados. Las predicciones del pipeline final ajustado con todos los registros se guardan en PostgreSQL y constituyen una salida distinta; no se usan para calcular las métricas OOF ni las señales de evaluación.
 
-Las métricas ROC-AUC, PR-AUC y F1 evaluado proceden de las predicciones de los folds externos. Las vistas del PBIX se alimentan con probabilidades `proba` y etiquetas `pred` del pipeline final ajustado con todos los registros. La medida `risk_rate` resume la proporción de predicciones positivas del modelo. No equivale a la tasa observada de Attrition ni al recuento de señales OOF; el panel debe rotularla como riesgo predicho.
-
-El umbral de referencia permite construir los recuentos OOF que acompañan la evaluación y configurar las predicciones del modelo final. Las dos salidas se distinguen en informes, gráficos y dashboard. La copia versionada del PBIX mantiene un snapshot previo; sigue la guía de refresco para actualizar las métricas y el selector de modelos.
+El umbral de referencia permite construir los recuentos OOF que acompañan la evaluación y configurar las predicciones del modelo final. Los informes y gráficos identifican por separado cada tipo de resultado.
 
 ## Encuesta sintética
 
-Todas las columnas `survey_*` se excluyen del entrenamiento. Su única finalidad es demostrar integración de fuentes y disponibilidad de campos para el flujo de datos/BI.
+Todas las columnas `survey_*` se excluyen del entrenamiento. Su finalidad es demostrar integración de fuentes y disponibilidad de campos para el flujo de datos.

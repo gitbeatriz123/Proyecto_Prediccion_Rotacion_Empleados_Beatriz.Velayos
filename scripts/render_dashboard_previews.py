@@ -239,9 +239,9 @@ def generate(metrics_path, predictions_path, effects_path, output_dir):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--metrics", type=Path, default=ROOT / "output/metrics/model_compare.json")
-    parser.add_argument("--predictions", type=Path, default=ROOT / "output/bi/predictions_logreg.csv")
-    parser.add_argument("--effects", type=Path, default=ROOT / "output/bi/feature_effects.csv")
-    parser.add_argument("--output-dir", type=Path, default=ROOT / "docs/powerbi")
+    parser.add_argument("--predictions", type=Path, default=ROOT / "output/dashboard/predictions_logreg.csv")
+    parser.add_argument("--effects", type=Path, default=ROOT / "output/dashboard/feature_effects.csv")
+    parser.add_argument("--output-dir", type=Path, default=ROOT / "docs/panel")
     args = parser.parse_args()
     generate(args.metrics, args.predictions, args.effects, args.output_dir)
 

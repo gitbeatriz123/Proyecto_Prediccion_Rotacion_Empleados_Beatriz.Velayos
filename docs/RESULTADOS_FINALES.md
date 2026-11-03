@@ -41,7 +41,7 @@ Con el umbral de referencia de Regresión Logística (mediana de los cinco umbra
 - Investigación y Desarrollo: 131.
 - Recursos Humanos: 10.
 
-Estas señales son recuentos sobre puntuaciones OOF. El panel HTML y el libro de datos presentan métricas, tasas observadas, señales y factores en apartados separados. El libro permite crear un PBIX actual en Power BI Desktop sin conectar Docker.
+Estas señales son recuentos sobre puntuaciones OOF. El panel HTML presenta métricas, tasas observadas, señales y factores en apartados separados, con sus definiciones y denominadores.
 
 ## Lectura de negocio
 
@@ -65,4 +65,4 @@ La ejecución canónica de GitHub Actions [37276469074](https://github.com/gitbe
 6. generación de previews;
 7. publicación de artefactos de reproducibilidad.
 
-El [panel interactivo HTML](powerbi/Panel_Rotacion_Empleados_interactivo.html) refleja estos resultados y puede abrirse sin Docker. El [libro Excel de datos para Power BI](../bi/Panel_PowerBI_datos_canonicos.xlsx) contiene las tablas agregadas para crear el PBIX en Power BI Desktop.
+El [panel interactivo HTML](panel/Panel_Rotacion_Empleados_interactivo.html) refleja estos resultados y puede abrirse sin Docker. Descarga el archivo HTML y ábrelo en un navegador para usar el selector de modelo.
