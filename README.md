@@ -92,7 +92,7 @@ docker compose run --rm jupyter python /scripts/persist_results.py \
 
 Para regenerar sus HTML desde cero: `bash scripts/export_notebooks.sh`.
 
-Los notebooks documentan el análisis. `02_Modelado_Baseline` y `03_Modelado_DL` muestran ejercicios exploratorios independientes; sus resultados no sustituyen la evaluación canónica de `scripts/train_ml.py`.
+Los notebooks documentan el análisis. `02_Modelado_Baseline` y `03_Modelado_DL` muestran análisis exploratorios independientes; sus resultados no sustituyen la evaluación canónica de `scripts/train_ml.py`.
 
 ## Panel interactivo y visualizaciones
 
