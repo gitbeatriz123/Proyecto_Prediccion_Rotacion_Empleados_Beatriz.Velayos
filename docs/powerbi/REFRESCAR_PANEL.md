@@ -1,77 +1,69 @@
-# Panel interactivo y estado del PBIX
+# Crear el PBIX actualizado en Power BI Desktop
 
-El [panel interactivo HTML](Panel_Rotacion_Empleados_interactivo.html) muestra los resultados canónicos en castellano y se abre en un navegador sin Docker ni conexión a una base de datos.
+El libro [Panel_PowerBI_datos_canonicos.xlsx](../../bi/Panel_PowerBI_datos_canonicos.xlsx) contiene los resultados canónicos en tablas que Power BI Desktop puede importar directamente. No requiere Docker, PostgreSQL ni programación.
 
-El archivo `bi/Panel_Rotacion_Empleados.pbix` incluido en el repositorio es una instantánea anterior con LogReg y RF; no refleja estas métricas canónicas. No se ha sustituido por un PBIX inventado: Microsoft solo admite crear o convertir un PBIX válido mediante Power BI Desktop ([formato de proyectos de Power BI](https://learn.microsoft.com/power-bi/developer/projects/projects-overview)). La guía siguiente sirve para actualizarlo si se dispone de Power BI Desktop y de una instancia local de Docker.
+## 1. Descargar y guardar los archivos
 
-## 1. Regenerar y cargar los resultados actuales
+1. Descarga el libro Excel desde la carpeta `bi/` del repositorio.
+2. Guarda el libro en una carpeta de tu ordenador Windows.
+3. Abre Power BI Desktop.
 
-Desde la raíz del repositorio, sigue el bloque **Pipeline canónico** del README. Incluye el control de datos, la integración con PySpark, el entrenamiento de los tres modelos, la carga de características y la persistencia de LogReg, RF y MLP en PostgreSQL.
+## 2. Importar los datos
 
-Comprueba que Docker Compose está en marcha y que las variables de PostgreSQL coinciden con las de `.env`. El puerto publicado por defecto es `5442`; la base de datos predeterminada es `mlops`. Si no has cambiado las variables, el usuario predeterminado es `ml`; revisa la contraseña configurada localmente. No publiques el archivo `.env`.
+1. En Power BI Desktop, pulsa **Inicio → Obtener datos → Libro de Excel**.
+2. Selecciona `Panel_PowerBI_datos_canonicos.xlsx` y pulsa **Abrir**.
+3. En la ventana **Navegador**, marca estas hojas:
+   - `Metricas_modelos`
+   - `Departamentos`
+   - `Horas_extra`
+   - `Factores_LogReg`
+   - `Recomendaciones`
+4. Puedes dejar `Notas` sin marcar; contiene definiciones y fuentes.
+5. Pulsa **Cargar**.
 
-Regenera también las figuras y la copia del CSV de coeficientes:
+## 3. Crear las páginas del informe
 
-```bash
-docker compose run --rm jupyter python /scripts/render_dashboard_previews.py
-```
+### Resumen de modelos
 
-## 2. Corregir las conexiones de PostgreSQL
+- Añade una tabla con `Modelo`, `ROC_AUC`, `PR_AUC`, `F1_evaluado` y `Umbral_referencia`.
+- Añade un gráfico de columnas agrupadas. Usa `Modelo` como eje y las métricas `ROC_AUC`, `PR_AUC` y `F1_evaluado` como valores.
+- Mantén el título **Comparación de modelos**. El nombre del modelo es **Random Forest**.
 
-Abre `bi/Panel_Rotacion_Empleados.pbix` con Power BI Desktop. En **Archivo → Opciones y configuración → Configuración de origen de datos**, localiza el origen PostgreSQL actual, que apunta a `192.168.0.13:5442`, y cambia el servidor al equipo donde se ejecuta Docker. Si Power BI Desktop y Docker están en el mismo equipo, usa `localhost:5442`; si están en equipos distintos, utiliza la dirección local accesible del equipo Docker.
+### Departamentos
 
-Mantén la base de datos `mlops`. En la autenticación de PostgreSQL, introduce las credenciales que estén configuradas en el `.env` local. Aplica el cambio al origen existente para que las consultas de las tablas `public` usen el mismo servidor.
+- Añade un gráfico de barras con `Departamento` y `Tasa_observada`.
+- Añade una tabla con `Departamento`, `Empleados`, `Salidas_observadas` y `Senales_OOF_LogReg`.
+- Titula las señales como **Señales OOF de Regresión Logística (umbral 0,706)**.
 
-## 3. Actualizar el CSV de factores asociados
+### Horas extra
 
-En **Transformar datos**, selecciona la consulta `feature_effects` y abre **Editor avanzado**. Sustituye la ruta absoluta local antigua por la ruta completa a `docs/powerbi/feature_effects.csv` dentro de tu copia del proyecto. Esa copia se genera con el comando del paso 1.
+- Añade un gráfico de columnas con `Grupo` y `Tasa_observada`.
+- Añade `Empleados` y `Salidas_observadas` en una tabla junto al gráfico.
 
-La ruta es local al equipo donde se abre Power BI. Conserva las dos columnas `feature` y `effect`. Como el CSV está codificado en UTF-8, usa `Encoding=65001` en `Csv.Document` para que se vean correctamente las tildes. La consulta puede quedar así, sustituyendo la ruta de ejemplo por la ruta completa de tu copia local:
+### Factores y recomendaciones
 
-```powerquery
-let
-    Origen = Csv.Document(
-        File.Contents("C:\\ruta\\al\\proyecto\\docs\\powerbi\\feature_effects.csv"),
-        [Delimiter=",", Columns=2, Encoding=65001, QuoteStyle=QuoteStyle.Csv]
-    ),
-    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
-    Tipos = Table.TransformColumnTypes(Encabezados, {{"feature", type text}, {"effect", type number}})
-in
-    Tipos
-```
+- Añade un gráfico de barras con `Factor` y `Coeficiente`. Usa los diez primeros factores de la tabla, que ya están ordenados por magnitud.
+- Añade una tabla con los campos de `Recomendaciones`.
+- Titula el gráfico **Factores asociados en Regresión Logística**. Los coeficientes describen asociaciones del modelo.
 
-Al guardar el PBIX, la ruta nueva queda asociada al archivo.
+## 4. Guardar el PBIX
 
-## 4. Incluir MLP en el selector del panel
+1. Pulsa **Archivo → Guardar como**.
+2. Guarda el informe en la carpeta `bi` del proyecto con este nombre:
 
-El selector desconectado `Dim Modelo` del PBIX contiene solo `LogReg` y `RF`. En **Transformar datos**, selecciona `Dim Modelo`, abre el **Editor avanzado** y reemplaza su contenido por:
+   `Panel_Rotacion_Empleados.pbix`
 
-```powerquery
-let
-    Origen = #table(
-        type table [model_name = text],
-        {{"LogReg"}, {"RF"}, {"MLP"}}
-    )
-in
-    Origen
-```
+3. Conserva el libro Excel junto al PBIX para que se pueda actualizar el informe.
 
-Así el selector permite consultar las métricas y predicciones de los tres modelos que se persisten en PostgreSQL.
+## 5. Comprobar las cifras
 
-## 5. Alinear los rótulos del panel con lo que mide
+La tabla de modelos debe mostrar, redondeado a tres decimales:
 
-Las tablas de predicciones contienen `proba` (probabilidad estimada) y `pred` (clasificación binaria al umbral del modelo). Las medidas del PBIX que promedian `pred` muestran la proporción de empleados que el modelo clasifica como señal; no calculan la tasa observada de salidas.
+| Modelo | ROC-AUC | PR-AUC | F1 evaluado |
+|---|---:|---:|---:|
+| Regresión Logística | 0,823 | 0,575 | 0,542 |
+| Random Forest | 0,803 | 0,540 | 0,523 |
+| MLP | 0,814 | 0,559 | 0,522 |
 
-En **Vista de modelo**, renombra las medidas `Churn Rate Pred (Sel Model)`, `Churn Rate Dept (Sel Model)` y `Churn Rate JobRole (Sel Model)` como **Riesgo predicho (%)**, **Riesgo predicho por departamento (%)** y **Riesgo predicho por puesto (%)**. Actualiza sus títulos y el texto del tooltip: cambia “tasa de rotación” o “Churn estimado” por **riesgo predicho**. Mantén las tasas observadas etiquetadas como observadas y con su denominador.
+Las tasas de departamento y horas extra son **observadas**. Los recuentos de `Senales_OOF_LogReg` son señales de evaluación fuera de muestra y no tasas observadas.
 
-## 6. Actualizar y comprobar
-
-Pulsa **Cerrar y aplicar** y después **Actualizar**. Comprueba estos puntos antes de guardar:
-
-- `public metrics` muestra tres modelos, con LogReg: ROC-AUC 0,823 / PR-AUC 0,575 / F1 evaluado 0,542; RF: 0,803 / 0,540 / 0,523; y MLP: 0,814 / 0,559 / 0,522.
-- El selector ofrece LogReg, RF y MLP.
-- Las páginas muestran los valores del modelo seleccionado y no quedan errores de conexión o de ruta del CSV.
-- Los rótulos distinguen el **riesgo predicho por el modelo final**, las **tasas observadas** y las **señales OOF** de la evaluación. Son salidas diferentes.
-- El panel y la presentación conservan el nombre **Random Forest**.
-
-Guarda el archivo actualizado en `bi/Panel_Rotacion_Empleados.pbix`. Si trabajas en otra copia, reemplaza el PBIX del repositorio con la versión ya actualizada.
