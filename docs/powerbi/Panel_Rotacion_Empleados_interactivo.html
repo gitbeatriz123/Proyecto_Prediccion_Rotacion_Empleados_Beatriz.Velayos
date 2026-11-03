@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>Panel de rotación de empleados · Resultados canónicos</title>
+  <style>
+    :root {
+      --navy:#142b45; --blue:#286b8c; --teal:#16847d; --mint:#b9e4dc;
+      --gold:#e2ab32; --coral:#d97969; --ink:#203247; --muted:#62758a;
+      --line:#dce5eb; --paper:#f3f7fa; --white:#fff; --shadow:0 10px 30px #1c385010;
+    }
+    * { box-sizing:border-box; }
+    body { margin:0; background:var(--paper); color:var(--ink); font:15px/1.5 "Segoe UI",Arial,sans-serif; }
+    .wrap { width:min(1200px, calc(100% - 36px)); margin:0 auto; }
+    header { background:linear-gradient(118deg,var(--navy),#205a72); color:white; padding:34px 0 30px; }
+    .eyebrow { margin:0 0 8px; color:#b9e4dc; text-transform:uppercase; font-size:12px; font-weight:700; letter-spacing:.13em; }
+    h1 { margin:0; font-size:clamp(29px,4vw,43px); line-height:1.08; letter-spacing:-.02em; }
+    .intro { max-width:800px; margin:13px 0 0; color:#e5eef4; font-size:16px; }
+    main { padding:24px 0 40px; }
+    .toolbar { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:18px; }
+    .toolbar p { margin:0; color:var(--muted); }
+    label { font-weight:700; color:var(--navy); }
+    select { margin-left:8px; padding:10px 38px 10px 12px; border:1px solid #b9cbd6; border-radius:8px; background:white; color:var(--navy); font:inherit; font-weight:700; }
+    .grid { display:grid; gap:16px; }
+    .kpis { grid-template-columns:repeat(4,minmax(0,1fr)); }
+    .two { grid-template-columns:1.15fr .85fr; margin-top:16px; }
+    .three { grid-template-columns:repeat(3,minmax(0,1fr)); margin-top:16px; }
+    .card { background:var(--white); border:1px solid var(--line); border-radius:14px; padding:20px; box-shadow:var(--shadow); min-width:0; }
+    .kpi { min-height:132px; }
+    .kpi .label { color:var(--muted); font-size:13px; font-weight:650; }
+    .kpi .value { display:block; margin-top:8px; color:var(--navy); font-size:35px; font-weight:750; line-height:1.1; font-variant-numeric:tabular-nums; }
+    .kpi .hint { display:block; margin-top:7px; color:var(--muted); font-size:12px; }
+    h2 { margin:0 0 4px; color:var(--navy); font-size:19px; line-height:1.25; }
+    h3 { margin:17px 0 5px; color:var(--navy); font-size:15px; }
+    .sub { margin:0 0 17px; color:var(--muted); font-size:13px; }
+    .model-row { display:grid; grid-template-columns:132px repeat(3,minmax(0,1fr)); align-items:center; gap:12px; margin:16px 0; font-size:13px; }
+    .metric-mini { display:grid; grid-template-columns:1fr 48px; gap:4px 8px; align-items:center; }
+    .metric-mini span { grid-column:1/-1; color:var(--muted); font-size:11px; }
+    .metric-mini .track { grid-column:1; grid-row:2; }
+    .metric-mini b { grid-column:2; grid-row:2; text-align:right; color:var(--navy); font-size:12px; font-variant-numeric:tabular-nums; }
+    .model-row strong { color:var(--navy); }
+    .track { height:11px; overflow:hidden; border-radius:99px; background:#edf2f5; }
+    .bar { height:100%; border-radius:99px; background:var(--teal); }
+    .bar.pr { background:var(--blue); }
+    .bar.f1 { background:var(--gold); }
+    .legend { display:flex; gap:14px; flex-wrap:wrap; margin-top:18px; color:var(--muted); font-size:12px; }
+    .dot { display:inline-block; width:9px; height:9px; margin-right:5px; border-radius:50%; background:var(--teal); }
+    .dot.pr { background:var(--blue); } .dot.f1 { background:var(--gold); }
+    .dept { display:grid; grid-template-columns:minmax(132px,1.2fr) 2fr 72px 76px; gap:12px; align-items:center; padding:12px 0; border-bottom:1px solid var(--line); }
+    .dept:last-of-type { border-bottom:0; }
+    .dept-name { color:var(--navy); font-weight:700; }
+    .rate-track { height:12px; border-radius:99px; background:#edf2f5; overflow:hidden; }
+    .rate-bar { display:block; height:100%; border-radius:99px; background:var(--coral); }
+    .num { text-align:right; color:var(--navy); font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap; }
+    .small { color:var(--muted); font-size:12px; }
+    .ot-row { margin:17px 0 20px; }
+    .ot-head { display:flex; justify-content:space-between; gap:10px; margin-bottom:7px; }
+    .ot-head strong { color:var(--navy); }
+    .ot-head span { color:var(--muted); font-variant-numeric:tabular-nums; }
+    .ot-track { height:14px; border-radius:99px; background:#edf2f5; overflow:hidden; }
+    .ot-bar { display:block; height:100%; background:var(--gold); border-radius:99px; }
+    .factor { display:grid; grid-template-columns:minmax(150px,1fr) 1fr 52px; gap:9px; align-items:center; margin:11px 0; font-size:13px; }
+    .factor-name { color:var(--ink); }
+    .factor-track { position:relative; height:10px; border-radius:99px; background:#edf2f5; overflow:hidden; }
+    .factor-track:after { content:""; position:absolute; left:50%; top:0; bottom:0; width:1px; background:#9fb0bd; }
+    .factor-fill { position:absolute; top:0; height:100%; border-radius:99px; }
+    .factor-fill.pos { left:50%; background:var(--coral); }
+    .factor-fill.neg { right:50%; background:var(--blue); }
+    .factor-value { text-align:right; color:var(--navy); font-weight:700; font-variant-numeric:tabular-nums; }
+    .recommendation { border-top:3px solid var(--teal); }
+    .recommendation ol { margin:12px 0 0; padding-left:21px; }
+    .recommendation li { margin:9px 0; }
+    .callout { padding:13px 14px; border-left:4px solid var(--gold); border-radius:7px; background:#fff9eb; color:#594a28; font-size:13px; }
+    footer { padding:20px 0 30px; border-top:1px solid var(--line); color:var(--muted); font-size:12px; }
+    footer a { color:var(--blue); }
+    @media (max-width:900px) { .kpis { grid-template-columns:repeat(2,minmax(0,1fr)); } .two,.three { grid-template-columns:1fr; } }
+    @media (max-width:600px) { .wrap { width:min(100% - 24px,1200px); } header { padding:26px 0; } .card { padding:16px; } .dept { grid-template-columns:1fr 1.3fr 60px; } .dept .signals { grid-column:1/-1; text-align:left; } .model-row { grid-template-columns:1fr; gap:8px; } .metric-mini { grid-template-columns:74px 1fr 48px; } .metric-mini span { grid-column:1; grid-row:1; } .metric-mini .track { grid-column:2; grid-row:1; } .metric-mini b { grid-column:3; grid-row:1; } .factor { grid-template-columns:1fr 1fr 45px; } .kpi .value { font-size:30px; } }
+    @media print { body { background:white; } header { padding:22px 0; print-color-adjust:exact; } .wrap { width:100%; } .card { box-shadow:none; break-inside:avoid; } select { border:0; padding:0; } footer { padding-bottom:0; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <p class="eyebrow">Analítica de personas · resultados verificados</p>
+      <h1>Rotación de empleados</h1>
+      <p class="intro">Comparación de modelos y lectura de negocio para priorizar revisiones por área, condiciones de trabajo y factores asociados.</p>
+    </div>
+  </header>
+  <main class="wrap">
+    <div class="toolbar">
+      <p><strong>Base de análisis:</strong> 1.470 registros · 237 casos positivos · prevalencia 16,1&nbsp;%</p>
+      <label for="modelSelect">Modelo destacado
+        <select id="modelSelect" aria-label="Selecciona el modelo para las tarjetas destacadas">
+          <option value="LogReg">Regresión Logística</option>
+          <option value="RF">Random Forest</option>
+          <option value="MLP">MLP</option>
+        </select>
+      </label>
+    </div>
+
+    <section class="grid kpis" aria-label="Métricas del modelo seleccionado">
+      <article class="card kpi"><span class="label">ROC-AUC</span><strong class="value" id="roc">0,823</strong><span class="hint">Capacidad de ordenación · evaluación OOF</span></article>
+      <article class="card kpi"><span class="label">PR-AUC</span><strong class="value" id="pr">0,575</strong><span class="hint">Precisión-recobrado · evaluación OOF</span></article>
+      <article class="card kpi"><span class="label">F1 evaluado</span><strong class="value" id="f1">0,542</strong><span class="hint">Media de los cinco folds externos</span></article>
+      <article class="card kpi"><span class="label">Umbral de referencia</span><strong class="value" id="threshold">0,706</strong><span class="hint">Mediana de los umbrales seleccionados</span></article>
+    </section>
+
+    <section class="grid two">
+      <article class="card">
+        <h2>Comparación de modelos</h2>
+        <p class="sub">Las tres métricas se calcularon con validación cruzada anidada: cinco folds externos y tres internos.</p>
+        <div id="modelChart" role="img" aria-label="Comparación de ROC-AUC, PR-AUC y F1 evaluado por modelo"></div>
+        <div class="legend"><span><i class="dot"></i>ROC-AUC</span><span><i class="dot pr"></i>PR-AUC</span><span><i class="dot f1"></i>F1 evaluado</span></div>
+      </article>
+      <article class="card">
+        <h2>Prioridad por departamento</h2>
+        <p class="sub">Tasa observada y volumen de salidas junto a las señales OOF de Regresión Logística al umbral 0,706.</p>
+        <div class="dept"><span class="dept-name">Ventas</span><span class="rate-track"><i class="rate-bar" style="width:100%"></i></span><span class="num">20,6&nbsp;%</span><span class="num signals">110 señales</span></div>
+        <div class="dept"><span class="dept-name">Recursos Humanos</span><span class="rate-track"><i class="rate-bar" style="width:92.2%"></i></span><span class="num">19,0&nbsp;%</span><span class="num signals">10 señales</span></div>
+        <div class="dept"><span class="dept-name">Investigación y Desarrollo</span><span class="rate-track"><i class="rate-bar" style="width:67%"></i></span><span class="num">13,8&nbsp;%</span><span class="num signals">131 señales</span></div>
+        <p class="small">Ventas: 92/446 salidas · RR. HH.: 12/63 · Investigación y Desarrollo: 133/961.</p>
+        <div class="callout"><strong>Lectura:</strong> Ventas presenta la tasa observada más alta; Investigación y Desarrollo concentra el mayor número de salidas observadas y señales OOF.</div>
+      </article>
+    </section>
+
+    <section class="grid three">
+      <article class="card">
+        <h2>Horas extra</h2>
+        <p class="sub">Comparación de tasas observadas en el conjunto.</p>
+        <div class="ot-row"><div class="ot-head"><strong>Con horas extra</strong><span>30,5&nbsp;% · 127/416</span></div><div class="ot-track"><i class="ot-bar" style="width:100%"></i></div></div>
+        <div class="ot-row"><div class="ot-head"><strong>Sin horas extra</strong><span>10,4&nbsp;% · 110/1.054</span></div><div class="ot-track"><i class="ot-bar" style="width:34.1%;background:var(--teal)"></i></div></div>
+        <p class="small">La diferencia orienta una revisión de planificación, turnos y reparto de carga.</p>
+      </article>
+      <article class="card">
+        <h2>Factores asociados</h2>
+        <p class="sub">Coeficientes de Regresión Logística con mayor magnitud.</p>
+        <div class="factor"><span class="factor-name">Director/a de investigación</span><span class="factor-track"><i class="factor-fill neg" style="width:50%"></i></span><span class="factor-value">−1,161</span></div>
+        <div class="factor"><span class="factor-name">Representante de ventas</span><span class="factor-track"><i class="factor-fill pos" style="width:44.1%"></i></span><span class="factor-value">+1,024</span></div>
+        <div class="factor"><span class="factor-name">Horas extra: sí</span><span class="factor-track"><i class="factor-fill pos" style="width:41.7%"></i></span><span class="factor-value">+0,968</span></div>
+        <div class="factor"><span class="factor-name">Viajes frecuentes</span><span class="factor-track"><i class="factor-fill pos" style="width:37.8%"></i></span><span class="factor-value">+0,878</span></div>
+        <p class="small">El signo y la magnitud describen asociaciones condicionadas del modelo; sirven para plantear preguntas de análisis.</p>
+      </article>
+      <article class="card recommendation">
+        <h2>Recomendaciones para dirección</h2>
+        <p class="sub">Prioridades de diagnóstico derivadas de los resultados.</p>
+        <ol>
+          <li><strong>Ventas:</strong> revisar viajes, objetivos y carga comercial junto con la dirección del área.</li>
+          <li><strong>Investigación y Desarrollo:</strong> desglosar salidas por equipo y puesto para dimensionar el acompañamiento.</li>
+          <li><strong>Organización del trabajo:</strong> revisar turnos y cobertura en equipos con horas extra; comparar la evolución mensual.</li>
+          <li><strong>Seguimiento:</strong> asignar responsables y registrar tasas, salidas, señales y denominadores.</li>
+        </ol>
+      </article>
+    </section>
+
+    <section class="card" style="margin-top:16px">
+      <h2>Cómo leer las cifras</h2>
+      <p class="sub" style="margin-bottom:0"><strong>Métricas evaluadas</strong> = predicciones fuera de muestra (OOF). <strong>Tasas observadas</strong> = salidas registradas divididas por el total del segmento. <strong>Señales OOF</strong> = puntuaciones fuera de muestra que superan el umbral de referencia de Regresión Logística. Son medidas distintas; el recuento de señales no es una tasa observada de rotación.</p>
+    </section>
+  </main>
+  <footer>
+    <div class="wrap">Resultados canónicos del proyecto · Los modelos comparados son Regresión Logística, <strong>Random Forest</strong> y MLP. · <a href="../../docs/RESULTADOS_FINALES.md">Ver metodología y resultados completos</a></div>
+  </footer>
+  <script>
+    const models = {
+      LogReg: { name: "Regresión Logística", roc: 0.8225178888580903, pr: 0.5753297837580837, f1: 0.5416443235910333, threshold: 0.7061433278389575 },
+      RF: { name: "Random Forest", roc: 0.8027657149896823, pr: 0.540439966767572, f1: 0.5234085347096432, threshold: 0.25666666666666665 },
+      MLP: { name: "MLP", roc: 0.8140003627391599, pr: 0.5590435261654663, f1: 0.5217703004515739, threshold: 0.3160704961149542 }
+    };
+    const fmt = n => n.toLocaleString("es-ES", { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+    const chart = document.getElementById("modelChart");
+    chart.innerHTML = Object.entries(models).map(([key, m]) => `
+      <div class="model-row" aria-label="${m.name}: ROC-AUC ${fmt(m.roc)}, PR-AUC ${fmt(m.pr)}, F1 evaluado ${fmt(m.f1)}">
+        <strong>${m.name}</strong>
+        <div class="metric-mini"><span>ROC-AUC</span><div class="track"><i class="bar" style="display:block;width:${m.roc*100}%"></i></div><b>${fmt(m.roc)}</b></div>
+        <div class="metric-mini"><span>PR-AUC</span><div class="track"><i class="bar pr" style="display:block;width:${m.pr*100}%"></i></div><b>${fmt(m.pr)}</b></div>
+        <div class="metric-mini"><span>F1 evaluado</span><div class="track"><i class="bar f1" style="display:block;width:${m.f1*100}%"></i></div><b>${fmt(m.f1)}</b></div>
+      </div>`).join("");
+    document.getElementById("modelSelect").addEventListener("change", event => {
+      const m = models[event.target.value];
+      document.getElementById("roc").textContent = fmt(m.roc);
+      document.getElementById("pr").textContent = fmt(m.pr);
+      document.getElementById("f1").textContent = fmt(m.f1);
+      document.getElementById("threshold").textContent = fmt(m.threshold);
+    });
+  </script>
+</body>
+</html>
