@@ -41,7 +41,7 @@ Con el umbral de referencia de Regresión Logística (mediana de los cinco umbra
 - Investigación y Desarrollo: 131.
 - Recursos Humanos: 10.
 
-Estas señales son recuentos sobre puntuaciones OOF. El PBIX calcula riesgo predicho con `pred` y `proba` del pipeline final ajustado con todos los registros; esa lectura se presenta separada de las tasas observadas y de los recuentos OOF. La copia del PBIX incluida conserva una instantánea anterior con LogReg y RF; la guía de refresco indica cómo cargar las métricas actuales e incorporar MLP.
+Estas señales son recuentos sobre puntuaciones OOF. El panel HTML presenta métricas, tasas observadas, señales y factores en apartados separados. El PBIX versionado conserva una instantánea anterior con LogReg y RF; sus cifras no representan esta ejecución canónica.
 
 ## Lectura de negocio
 
@@ -65,4 +65,4 @@ La ejecución canónica de GitHub Actions [37276469074](https://github.com/gitbe
 6. generación de previews;
 7. publicación de artefactos de reproducibilidad.
 
-Para actualizar las visualizaciones interactivas y el snapshot de datos tras esta ejecución, sigue [la guía de refresco del panel](powerbi/REFRESCAR_PANEL.md).
+El [panel interactivo HTML](powerbi/Panel_Rotacion_Empleados_interactivo.html) refleja estos resultados y puede abrirse sin Docker. El [PBIX versionado](../bi/Panel_Rotacion_Empleados.pbix) es una instantánea anterior.
