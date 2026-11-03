@@ -20,7 +20,7 @@ Se utiliza validación cruzada estratificada de 5 particiones. Para cada partici
 
 Las métricas ROC-AUC, PR-AUC y F1 evaluado se calculan sobre las predicciones externas agrupadas. Así se evita seleccionar el umbral sobre las mismas predicciones que después se utilizan para medir el F1.
 
-El 'threshold_reference' que aparece en los artefactos es la mediana de los umbrales seleccionados en los cinco pliegues externos. Se utiliza únicamente como referencia operativa para las visualizaciones; no es una estimación de rendimiento independiente.
+El `threshold_reference` es la mediana de los cinco umbrales seleccionados mediante CV interna en los pliegues externos. Se utiliza como corte común para contar señales OOF y para el modelo final persistido. El F1 evaluado, en cambio, promedia los cinco F1 externos con el umbral específico de cada fold; el corte común no se usa para calcular ese F1.
 
 ## Interpretación
 
@@ -29,9 +29,9 @@ Los coeficientes de Regresión Logística representan asociaciones condicionadas
 
 ## Separación entre evaluación y operación
 
-Las métricas ROC-AUC, PR-AUC y F1 evaluado proceden exclusivamente de predicciones del fold externo. Las predicciones que se persisten en PostgreSQL para el dashboard son, en cambio, las predicciones del pipeline final ajustado con todos los registros. Por tanto, el panel sirve para operación/segmentación sobre el modelo final y no debe interpretarse como una segunda estimación independiente del rendimiento.
+Las métricas ROC-AUC, PR-AUC y F1 evaluado proceden de las predicciones de los folds externos. Las vistas del PBIX se alimentan con probabilidades `proba` y etiquetas `pred` del pipeline final ajustado con todos los registros. La medida `risk_rate` resume la proporción de predicciones positivas del modelo. No equivale a la tasa observada de Attrition ni al recuento de señales OOF; el panel debe rotularla como riesgo predicho.
 
-El umbral de referencia se utiliza para generar señales del modelo final y para la visualización. Las cifras de señales obtenidas durante la evaluación OOF se etiquetan como métricas de evaluación y no se mezclan con las señales operativas del dashboard.
+El umbral de referencia permite construir los recuentos OOF que acompañan la evaluación y configurar las predicciones del modelo final. Las dos salidas se distinguen en informes, gráficos y dashboard. La copia versionada del PBIX mantiene un snapshot previo; sigue la guía de refresco para actualizar las métricas y el selector de modelos.
 
 ## Encuesta sintética
 

@@ -1,8 +1,6 @@
 # Predicción de rotación de empleados
 
-Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra preparación de datos con PySpark, modelado con scikit-learn, persistencia en PostgreSQL y visualización en Power BI.
-
-> **Uso educativo:** los datos y resultados son demostrativos. No están validados para evaluar, seleccionar, retener ni gestionar personas.
+Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra preparación de datos con PySpark, modelado con scikit-learn y visualización en Power BI para analizar una empresa hipotética y orientar sus prioridades de negocio.
 
 ## Alcance
 
@@ -18,7 +16,8 @@ Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra prepara
 
 - [Panel de Power BI](bi/Panel_Rotacion_Empleados.pbix)
 - [Presentación del proyecto](docs/Presentacion_Proyecto_Rotacion.pptx)
-- [Resultados finales verificados](docs/RESULTADOS_FINALES.md) · Memoria PDF final entregada como artefacto de la revisión
+- [Resultados finales verificados](docs/RESULTADOS_FINALES.md)
+- [Memoria del proyecto (PDF)](docs/Memoria_Proyecto_Rotacion.pdf) · [versión HTML](docs/Memoria_Proyecto_Rotacion.html)
 - Notebooks de análisis y documentación en `notebooks/`
 - [Arquitectura](docs/arquitectura.md)
 - [Procedencia de datos](docs/DATA_SOURCE.md)
@@ -28,7 +27,7 @@ Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra prepara
 
 El dataset principal contiene 1.470 registros y 35 variables del ejercicio de rotación. La procedencia y las limitaciones están documentadas en `docs/DATA_SOURCE.md`.
 
-`encuesta_clima.csv` es completamente sintético: se genera con semilla 42 y cinco escalas aleatorias de 1 a 5. No son respuestas reales ni una medición observada de clima.
+`encuesta_clima.csv` se genera con semilla 42 y cinco escalas aleatorias de 1 a 5, sin consultar la etiqueta de rotación.
 
 ## Pipeline canónico
 
@@ -72,7 +71,7 @@ done
 docker compose run --rm jupyter python /scripts/render_dashboard_previews.py
 ```
 
-La evaluación usa 5 folds externos y 3 folds internos para seleccionar el umbral. Las variables `survey_*` son sintéticas y se excluyen del entrenamiento; su finalidad es demostrar integración de fuentes. Las métricas finales se generan de nuevo con `scripts/train_ml.py`. La persistencia posterior alimenta las tablas y vistas que utiliza el PBIX. No se deben copiar como definitivos valores históricos de versiones anteriores.
+La evaluación usa 5 folds externos y 3 folds internos para seleccionar el umbral. Las variables `survey_*` son sintéticas y se excluyen del entrenamiento; se conservan para recorrer la integración de los dos ficheros. Las métricas finales se generan de nuevo con `scripts/train_ml.py`. La persistencia posterior alimenta las tablas y vistas que utiliza el PBIX. No se deben copiar como definitivos valores históricos de versiones anteriores.
 
 ## PostgreSQL
 
@@ -95,13 +94,13 @@ docker compose run --rm jupyter python /scripts/persist_results.py \
 
 Para regenerar sus HTML desde cero: `bash scripts/export_notebooks.sh`.
 
-Los notebooks explican el análisis y sirven como material educativo. `02_Modelado_Baseline` y `03_Modelado_DL` mantienen sus comparativas exploratorias separadas y no deben sobrescribir la comparativa canónica.
+Los notebooks documentan el análisis. `02_Modelado_Baseline` y `03_Modelado_DL` muestran ejercicios exploratorios independientes; sus resultados no sustituyen la evaluación canónica de `scripts/train_ml.py`.
 
 ## Dashboard
 
 ![Comparación de métricas](docs/powerbi/01_Resumen_KPIs.png)
 
-Las figuras de `docs/powerbi/` son vistas estáticas generadas a partir de los artefactos del pipeline. El PBIX es el entregable interactivo y debe abrirse en Power BI Desktop para comprobar filtros, relaciones e interacciones.
+Las figuras de `docs/powerbi/` resumen la evaluación OOF y las tasas observadas de Attrition. El PBIX presenta probabilidades y tasas de riesgo predichas por el modelo ajustado con todos los registros. Son magnitudes distintas; consulta [cómo actualizar e interpretar el panel](docs/powerbi/REFRESCAR_PANEL.md).
 
 ## Reproducibilidad y calidad
 
@@ -112,6 +111,6 @@ Las figuras de `docs/powerbi/` son vistas estáticas generadas a partir de los a
 - CI en `.github/workflows/ci.yml`.
 - Salidas generables en `output/metrics`, `output/models`, `output/plots` y `output/bi`.
 
-## Uso responsable
+## Interpretación
 
-El proyecto es formativo. Los coeficientes y asociaciones no son efectos causales, y el rendimiento en este conjunto no se puede trasladar a una plantilla real. No deben introducirse datos personales, confidenciales o de empleados reales.
+Las puntuaciones y coeficientes sirven para ordenar preguntas de diagnóstico por área. Las tasas observadas, las señales OOF y el riesgo predicho por el modelo completo se presentan con sus etiquetas y denominadores para orientar el seguimiento de las medidas.

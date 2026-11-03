@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Genera las cinco figuras de resumen a partir de las métricas y predicciones versionadas."""
+"""Genera las figuras de resultados a partir de los artefactos de la ejecución canónica."""
 import argparse
 import csv
 import json
@@ -92,7 +92,7 @@ def generate(metrics_path, predictions_path, effects_path, output_dir):
     ax.legend(ncols=3, loc="upper center", bbox_to_anchor=(0.5, -0.15), frameon=False, fontsize=9)
     fig.subplots_adjust(bottom=0.23, top=0.84)
     finish(fig, output_dir / "01_Resumen_KPIs.png",
-           "Regresión Logística lidera ROC-AUC y PR-AUC; Random Forest logra el F1 más alto. Validación cruzada anidada: cinco folds externos y tres internos.")
+           "Regresión Logística lidera ROC-AUC (0,823), PR-AUC (0,575) y F1 evaluado (0,542), con validación cruzada anidada.")
 
     # Aggregate OOF scores, observed exits, departments and overtime directly from one file.
     scores = []
@@ -163,7 +163,7 @@ def generate(metrics_path, predictions_path, effects_path, output_dir):
     ax.grid(axis="y", visible=False)
     fig.subplots_adjust(left=0.28, right=0.98, bottom=0.20, top=0.84)
     finish(fig, output_dir / "03_Departamentos_Tasa_Rotacion.png",
-           "Señales OOF al umbral de referencia calculado durante la evaluación anidada. Las señales son prioritarias para análisis, no decisiones automáticas.")
+           "Señales OOF para ordenar revisiones por área, junto con su tasa observada y volumen de salidas.")
 
     # 4. Overtime: compare the observed rates and denominators.
     overtime_names = {"No": "Sin horas extra", "Yes": "Con horas extra"}
@@ -193,11 +193,23 @@ def generate(metrics_path, predictions_path, effects_path, output_dir):
         "BusinessTravel_Non-Travel": "Sin viajes de trabajo",
         "JobRole_Laboratory Technician": "Técnico/a de laboratorio",
         "JobRole_Human Resources": "Puesto en Recursos Humanos",
+        "OverTime_Yes": "Horas extra: sí",
+        "OverTime_No": "Horas extra: no",
         "YearsAtCompany": "Años en la empresa",
         "MaritalStatus_Single": "Estado civil: soltero/a",
         "EducationField_Technical Degree": "Formación técnica",
         "JobRole_Healthcare Representative": "Representante sanitario",
     }
+    localized_effects_path = output_dir / "feature_effects.csv"
+    with localized_effects_path.open("w", newline="", encoding="utf-8") as stream:
+        writer = csv.DictWriter(stream, fieldnames=["feature", "effect"])
+        writer.writeheader()
+        for row in effects:
+            writer.writerow({
+                "feature": feature_names.get(row["feature"], row["feature"]),
+                "effect": row["effect"],
+            })
+
     top = sorted(effects, key=lambda row: abs(float(row["effect"])), reverse=True)[:10]
     top = [(feature_names.get(row["feature"], row["feature"]), float(row["effect"])) for row in top]
     top.sort(key=lambda row: row[1])
@@ -221,7 +233,7 @@ def generate(metrics_path, predictions_path, effects_path, output_dir):
     ax.grid(axis="y", visible=False)
     fig.subplots_adjust(left=0.33, right=0.97, bottom=0.17, top=0.88)
     finish(fig, output_dir / "05_Factores_Asociados_Modelo.png",
-           "Representantes de ventas y viajes frecuentes destacan entre las asociaciones positivas de mayor magnitud.")
+           "Director/a de investigación (−1,161), representante de ventas (+1,024) y horas extra: sí (+0,968) destacan por magnitud.")
 
 
 def main():

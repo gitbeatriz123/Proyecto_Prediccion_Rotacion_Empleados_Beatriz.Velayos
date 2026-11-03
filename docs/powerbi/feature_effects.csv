@@ -1,0 +1,53 @@
+feature,effect
+Director/a de investigación,-1.1607288274992993
+Representante de ventas,1.0236090269952565
+Horas extra: sí,0.968261136855561
+Viajes frecuentes,0.8777155020441751
+Sin viajes de trabajo,-0.8411292691706366
+Técnico/a de laboratorio,0.8231273709161893
+Puesto en Recursos Humanos,0.8155545043215233
+Horas extra: no,-0.7581616633611898
+Años en la empresa,0.7496527969103383
+Formación técnica,0.7136155265956917
+Estado civil: soltero/a,0.7075175698711954
+Representante sanitario,-0.5930940376807267
+JobRole_Manager,-0.5799844674907201
+MaritalStatus_Divorced,-0.5298284136908374
+YearsWithCurrManager,-0.527361055710499
+YearsSinceLastPromotion,0.5091298105748101
+YearsInCurrentRole,-0.497995948764705
+TotalWorkingYears,-0.4677788389390129
+Department_Sales,0.4585837583573594
+EnvironmentSatisfaction,-0.43486409909357854
+EducationField_Human Resources,0.4301378551650948
+NumCompaniesWorked,0.4017831453626259
+EducationField_Life Sciences,-0.401186785235349
+JobSatisfaction,-0.4005993397596453
+Department_Human Resources,-0.3457273535427226
+JobInvolvement,-0.32153486919894825
+DistanceFromHome,0.30569426401280214
+EducationField_Medical,-0.2894950296850774
+Gender_Male,0.28583262142328547
+EducationField_Other,-0.24547786523490228
+TrainingTimesLastYear,-0.23941465800657216
+MonthlyIncome,-0.23090430893062075
+RelationshipSatisfaction,-0.22771560931733018
+WorkLifeBalance,-0.20700441317917798
+PercentSalaryHike,-0.18386795786125448
+Age,-0.18051499398457727
+BusinessTravel_Travel_Rarely,0.1735132406208893
+JobLevel,0.17236064221972278
+StockOptionLevel,-0.1357127374747575
+DailyRate,-0.12480704538853461
+JobRole_Manufacturing Director,-0.11348189340498877
+Department_Research & Development,0.0972430686797892
+PerformanceRating,0.08552886470719195
+Gender_Female,-0.07573314792879417
+JobRole_Research Scientist,-0.05797092922383676
+MonthlyRate,0.05693773794679194
+JobRole_Sales Executive,0.05306872656099622
+tenure_ratio,-0.05165799659737349
+MaritalStatus_Married,0.03241031731403165
+HourlyRate,-0.010119038011749907
+Education,-0.0034619393652645654
+EducationField_Marketing,0.002505771889026626
