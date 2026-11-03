@@ -24,7 +24,21 @@ Mantén la base de datos `mlops`. En la autenticación de PostgreSQL, introduce 
 
 En **Transformar datos**, selecciona la consulta `feature_effects` y abre **Editor avanzado**. Sustituye la ruta absoluta local antigua por la ruta completa a `docs/powerbi/feature_effects.csv` dentro de tu copia del proyecto. Esa copia se genera con el comando del paso 1.
 
-La ruta es local al equipo donde se abre Power BI. Conserva las dos columnas `feature` y `effect`; el CSV generado ya presenta en castellano las variables principales del gráfico. Al guardar el PBIX, la ruta nueva queda asociada al archivo.
+La ruta es local al equipo donde se abre Power BI. Conserva las dos columnas `feature` y `effect`. Como el CSV está codificado en UTF-8, usa `Encoding=65001` en `Csv.Document` para que se vean correctamente las tildes. La consulta puede quedar así, sustituyendo la ruta de ejemplo por la ruta completa de tu copia local:
+
+```powerquery
+let
+    Origen = Csv.Document(
+        File.Contents("C:\\ruta\\al\\proyecto\\docs\\powerbi\\feature_effects.csv"),
+        [Delimiter=",", Columns=2, Encoding=65001, QuoteStyle=QuoteStyle.Csv]
+    ),
+    Encabezados = Table.PromoteHeaders(Origen, [PromoteAllScalars=true]),
+    Tipos = Table.TransformColumnTypes(Encabezados, {{"feature", type text}, {"effect", type number}})
+in
+    Tipos
+```
+
+Al guardar el PBIX, la ruta nueva queda asociada al archivo.
 
 ## 4. Incluir MLP en el selector del panel
 
