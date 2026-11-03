@@ -15,7 +15,7 @@ Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra prepara
 ## Entregables
 
 - [Panel ejecutivo interactivo (HTML; funciona sin Docker ni Power BI Desktop)](docs/powerbi/Panel_Rotacion_Empleados_interactivo.html)
-- [Archivo de Power BI Desktop (PBIX; instantánea anterior)](bi/Panel_Rotacion_Empleados.pbix)
+- [Libro Excel de datos canónicos para crear el PBIX](bi/Panel_PowerBI_datos_canonicos.xlsx)
 - [Presentación del proyecto](docs/Presentacion_Proyecto_Rotacion.pptx)
 - [Resultados finales verificados](docs/RESULTADOS_FINALES.md)
 - [Memoria del proyecto (PDF)](docs/Memoria_Proyecto_Rotacion.pdf) · [versión HTML](docs/Memoria_Proyecto_Rotacion.html)
@@ -72,7 +72,7 @@ done
 docker compose run --rm jupyter python /scripts/render_dashboard_previews.py
 ```
 
-La evaluación usa 5 folds externos y 3 folds internos para seleccionar el umbral. Las variables `survey_*` son sintéticas y se excluyen del entrenamiento; se conservan para recorrer la integración de los dos ficheros. Las métricas finales se generan de nuevo con `scripts/train_ml.py`. La persistencia posterior alimenta las tablas y vistas que utiliza el PBIX. No se deben copiar como definitivos valores históricos de versiones anteriores.
+La evaluación usa 5 folds externos y 3 folds internos para seleccionar el umbral. Las variables `survey_*` son sintéticas y se excluyen del entrenamiento; se conservan para recorrer la integración de los dos ficheros. Las métricas finales se generan de nuevo con `scripts/train_ml.py`. La persistencia posterior alimenta las tablas de PostgreSQL. El libro `bi/Panel_PowerBI_datos_canonicos.xlsx` reúne las métricas y agregaciones canónicas para crear un PBIX sin conectar Docker ni PostgreSQL.
 
 ## PostgreSQL
 
@@ -101,7 +101,7 @@ Los notebooks documentan el análisis. `02_Modelado_Baseline` y `03_Modelado_DL`
 
 ![Comparación de métricas](docs/powerbi/01_Resumen_KPIs.png)
 
-Las figuras de `docs/powerbi/` resumen la evaluación OOF y las tasas observadas de Attrition. El panel interactivo HTML presenta los resultados canónicos con selector de modelo y abre directamente en un navegador, sin Docker ni conexión a bases de datos. El PBIX conservado en `bi/` es una instantánea anterior y no contiene los resultados canónicos actuales. Consulta [el estado y la guía del panel](docs/powerbi/REFRESCAR_PANEL.md).
+Las figuras de `docs/powerbi/` resumen la evaluación OOF y las tasas observadas de Attrition. El [panel HTML](docs/powerbi/Panel_Rotacion_Empleados_interactivo.html) permite consultar los resultados en un navegador. Para crear un PBIX actual en Power BI Desktop, importa el [libro de datos canónicos](bi/Panel_PowerBI_datos_canonicos.xlsx); no hace falta Docker ni PostgreSQL. Sigue [la guía paso a paso](docs/powerbi/REFRESCAR_PANEL.md).
 
 ## Reproducibilidad y calidad
 
