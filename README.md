@@ -1,6 +1,6 @@
 # Predicción de rotación de empleados
 
-Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra preparación de datos con PySpark, modelado con scikit-learn y visualización en Power BI para analizar una empresa hipotética y orientar sus prioridades de negocio.
+Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra preparación de datos con PySpark, modelado con scikit-learn y un panel ejecutivo interactivo para analizar una empresa hipotética y orientar sus prioridades de negocio.
 
 ## Alcance
 
@@ -8,7 +8,7 @@ Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra prepara
 - Comparación de Regresión Logística, Random Forest y MLP.
 - Evaluación con validación cruzada anidada y selección de umbral sin contaminar el fold externo.
 - Persistencia de características y predicciones en PostgreSQL.
-- Visualización ejecutiva y análisis de prioridades en Power BI.
+- Panel ejecutivo interactivo para comparar modelos, revisar indicadores y ordenar prioridades por área.
 
 **Tecnologías:** Python, PySpark, scikit-learn, Jupyter, Docker Compose, PostgreSQL y Power BI.
 
