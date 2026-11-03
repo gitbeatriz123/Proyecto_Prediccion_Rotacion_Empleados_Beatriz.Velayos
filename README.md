@@ -14,7 +14,8 @@ Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra prepara
 
 ## Entregables
 
-- [Panel de Power BI](bi/Panel_Rotacion_Empleados.pbix)
+- [Panel ejecutivo interactivo (HTML; funciona sin Docker ni Power BI Desktop)](docs/powerbi/Panel_Rotacion_Empleados_interactivo.html)
+- [Archivo de Power BI Desktop (PBIX; instantánea anterior)](bi/Panel_Rotacion_Empleados.pbix)
 - [Presentación del proyecto](docs/Presentacion_Proyecto_Rotacion.pptx)
 - [Resultados finales verificados](docs/RESULTADOS_FINALES.md)
 - [Memoria del proyecto (PDF)](docs/Memoria_Proyecto_Rotacion.pdf) · [versión HTML](docs/Memoria_Proyecto_Rotacion.html)
@@ -100,7 +101,7 @@ Los notebooks documentan el análisis. `02_Modelado_Baseline` y `03_Modelado_DL`
 
 ![Comparación de métricas](docs/powerbi/01_Resumen_KPIs.png)
 
-Las figuras de `docs/powerbi/` resumen la evaluación OOF y las tasas observadas de Attrition. El PBIX presenta probabilidades y tasas de riesgo predichas por el modelo ajustado con todos los registros. Son magnitudes distintas; consulta [cómo actualizar e interpretar el panel](docs/powerbi/REFRESCAR_PANEL.md).
+Las figuras de `docs/powerbi/` resumen la evaluación OOF y las tasas observadas de Attrition. El panel interactivo HTML presenta los resultados canónicos con selector de modelo y abre directamente en un navegador, sin Docker ni conexión a bases de datos. El PBIX conservado en `bi/` es una instantánea anterior y no contiene los resultados canónicos actuales. Consulta [el estado y la guía del panel](docs/powerbi/REFRESCAR_PANEL.md).
 
 ## Reproducibilidad y calidad
 
