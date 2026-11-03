@@ -1,6 +1,8 @@
-# Actualizar el panel de Power BI
+# Panel interactivo y estado del PBIX
 
-El archivo PBIX contiene el diseño y las medidas del panel. Para que muestre la ejecución canónica actual hay que regenerar y persistir los resultados y actualizar sus conexiones en Power BI Desktop.
+El [panel interactivo HTML](Panel_Rotacion_Empleados_interactivo.html) muestra los resultados canónicos en castellano y se abre en un navegador sin Docker ni conexión a una base de datos.
+
+El archivo `bi/Panel_Rotacion_Empleados.pbix` incluido en el repositorio es una instantánea anterior con LogReg y RF; no refleja estas métricas canónicas. No se ha sustituido por un PBIX inventado: Microsoft solo admite crear o convertir un PBIX válido mediante Power BI Desktop ([formato de proyectos de Power BI](https://learn.microsoft.com/power-bi/developer/projects/projects-overview)). La guía siguiente sirve para actualizarlo si se dispone de Power BI Desktop y de una instancia local de Docker.
 
 ## 1. Regenerar y cargar los resultados actuales
 
