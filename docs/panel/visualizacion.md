@@ -1,4 +1,4 @@
-# Panel de rotación de empleados
+# Panel de análisis de rotación de empleados
 
 Esta página muestra las gráficas directamente en GitHub. Haz clic en una imagen para verla a tamaño completo.
 
@@ -34,4 +34,4 @@ Muestra los coeficientes de Regresión Logística con mayor magnitud. Sus valore
 
 [Consultar resultados y recomendaciones](../RESULTADOS_FINALES.md)
 
-La versión HTML con selector de modelos se conserva como archivo descargable en esta carpeta: `Panel_Rotacion_Empleados_interactivo.html`.
+El panel interactivo con selector de modelos está disponible en formato HTML descargable: `Panel_Rotacion_Empleados_interactivo.html`.
