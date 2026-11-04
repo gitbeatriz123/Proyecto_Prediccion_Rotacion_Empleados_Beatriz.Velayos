@@ -14,8 +14,8 @@ Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra prepara
 
 ## Entregables
 
-- [Ver el panel y sus gráficas directamente en GitHub](docs/panel/visualizacion.md).
-- El archivo HTML interactivo con selector está en `docs/panel/Panel_Rotacion_Empleados_interactivo.html`; descárgalo para usarlo en un navegador.
+- [Panel de análisis de rotación de empleados (vista gráfica)](docs/panel/visualizacion.md).
+- Panel interactivo de rotación de empleados (HTML descargable): `docs/panel/Panel_Rotacion_Empleados_interactivo.html`. Descarga el archivo y ábrelo en un navegador para usar el selector de modelos.
 - [Presentación del proyecto](docs/Presentacion_Proyecto_Rotacion.pptx).
 - [Resultados finales verificados](docs/RESULTADOS_FINALES.md).
 - [Memoria del proyecto (PDF)](docs/Memoria_Proyecto_Rotacion.pdf) · [versión HTML](docs/Memoria_Proyecto_Rotacion.html).
@@ -95,11 +95,11 @@ Para regenerar sus HTML desde cero: `bash scripts/export_notebooks.sh`.
 
 Los notebooks documentan el análisis. `02_Modelado_Baseline` y `03_Modelado_DL` muestran análisis exploratorios independientes; sus resultados no sustituyen la evaluación canónica de `scripts/train_ml.py`.
 
-## Panel interactivo y visualizaciones
+## Panel de análisis y visualizaciones
 
 ![Comparación de métricas de los modelos](docs/panel/01_Resumen_KPIs.png)
 
-[Abre la página del panel y sus cinco gráficas](docs/panel/visualizacion.md) para verlas directamente en GitHub. Las figuras de `docs/panel/` se regeneran a partir de los artefactos canónicos y distinguen las tasas observadas de las señales OOF. El archivo HTML interactivo con selector de modelos también se conserva en esa carpeta para descargarlo y abrirlo en un navegador.
+[Panel de análisis de rotación de empleados (vista gráfica)](docs/panel/visualizacion.md) para verlas directamente en GitHub. Las figuras de `docs/panel/` se regeneran a partir de los artefactos canónicos y distinguen las tasas observadas de las señales OOF. El archivo HTML interactivo con selector de modelos también se conserva en esa carpeta para descargarlo y abrirlo en un navegador.
 
 ## Reproducibilidad y calidad
 

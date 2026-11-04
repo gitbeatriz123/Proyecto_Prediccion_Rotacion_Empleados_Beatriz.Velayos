@@ -65,4 +65,4 @@ La ejecución canónica de GitHub Actions [37276469074](https://github.com/gitbe
 6. generación de previews;
 7. publicación de artefactos de reproducibilidad.
 
-El [panel visual con las cinco gráficas](panel/visualizacion.md) permite verlas directamente en GitHub. El archivo HTML interactivo con selector de modelos se conserva en la misma carpeta para descargarlo y abrirlo en un navegador.
+El [Panel de análisis de rotación de empleados (vista gráfica)](panel/visualizacion.md) reúne las cinco gráficas del proyecto. El archivo HTML interactivo con selector de modelos se conserva en la misma carpeta para descargarlo y abrirlo en un navegador.
