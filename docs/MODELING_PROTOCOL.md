@@ -2,13 +2,13 @@
 
 ## Pipeline canónico
 
-La ruta oficial del proyecto es 'scripts/train_ml.py'. Los notebooks sirven como material explicativo y exploratorio; no deben sobrescribir 'output/metrics/model_compare.json' ni sustituir al script canónico.
+La ruta oficial del proyecto es `scripts/train_ml.py`. Los notebooks sirven como material explicativo y exploratorio; no deben sobrescribir `output/metrics/model_compare.json` ni sustituir el script canónico.
 
 ## Variables
 
-El ETL conserva 'income_yearly' y 'overtime_flag' para facilitar análisis y persistencia en BI. Sin embargo, ambas son transformaciones deterministas de variables ya presentes ('MonthlyIncome' y 'OverTime') y se excluyen del entrenamiento para evitar duplicidad de información.
+El ETL conserva `income_yearly` y `overtime_flag` para facilitar análisis descriptivos y persistencia. Ambas son transformaciones deterministas de variables ya presentes (`MonthlyIncome` y `OverTime`) y se excluyen del entrenamiento para evitar duplicidad de información.
 
-La columna 'Attrition' se transforma en 'attrition_label' y después se elimina antes del modelado.
+La columna `Attrition` se transforma en `attrition_label` y después se elimina antes del modelado. Las columnas `survey_*` se conservan para demostrar la integración de fuentes, pero también se excluyen del entrenamiento.
 
 ## Evaluación
 
@@ -20,19 +20,18 @@ Se utiliza validación cruzada estratificada de 5 particiones. Para cada partici
 
 Las métricas ROC-AUC, PR-AUC y F1 evaluado se calculan sobre las predicciones externas agrupadas. Así se evita seleccionar el umbral sobre las mismas predicciones que después se utilizan para medir el F1.
 
-El 'threshold_reference' que aparece en los artefactos es la mediana de los umbrales seleccionados en los cinco pliegues externos. Se utiliza únicamente como referencia operativa para las visualizaciones; no es una estimación de rendimiento independiente.
+El `threshold_reference` es la mediana de los cinco umbrales seleccionados mediante CV interna en los pliegues externos. Se utiliza como corte común para contar señales OOF y para el modelo final persistido. El F1 evaluado, en cambio, promedia los cinco F1 externos con el umbral específico de cada fold; el corte común no se usa para calcular ese F1.
 
 ## Interpretación
 
 Los coeficientes de Regresión Logística representan asociaciones condicionadas por el conjunto de variables y su codificación. No deben describirse como efectos causales.
 
+## Separación entre evaluación y predicciones persistidas
 
-## Separación entre evaluación y operación
+El panel HTML presenta las métricas calculadas sobre predicciones OOF, las tasas observadas, los recuentos de señales OOF y los factores asociados en apartados separados. Las predicciones del pipeline final ajustado con todos los registros se guardan en PostgreSQL y constituyen una salida distinta; no se usan para calcular las métricas OOF ni las señales de evaluación.
 
-Las métricas ROC-AUC, PR-AUC y F1 evaluado proceden exclusivamente de predicciones del fold externo. Las predicciones que se persisten en PostgreSQL para el dashboard son, en cambio, las predicciones del pipeline final ajustado con todos los registros. Por tanto, el panel sirve para operación/segmentación sobre el modelo final y no debe interpretarse como una segunda estimación independiente del rendimiento.
-
-El umbral de referencia se utiliza para generar señales del modelo final y para la visualización. Las cifras de señales obtenidas durante la evaluación OOF se etiquetan como métricas de evaluación y no se mezclan con las señales operativas del dashboard.
+El umbral de referencia permite construir los recuentos OOF que acompañan la evaluación y configurar las predicciones del modelo final. Los informes y gráficos identifican por separado cada tipo de resultado.
 
 ## Encuesta sintética
 
-Todas las columnas `survey_*` se excluyen del entrenamiento. Su única finalidad es demostrar integración de fuentes y disponibilidad de campos para el flujo de datos/BI.
+Todas las columnas `survey_*` se excluyen del entrenamiento. Su finalidad es demostrar integración de fuentes y disponibilidad de campos para el flujo de datos.

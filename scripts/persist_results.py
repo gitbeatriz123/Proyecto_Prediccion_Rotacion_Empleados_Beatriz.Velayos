@@ -1,4 +1,5 @@
-import argparse, json, joblib, numpy as np, pandas as pd\nimport os
+import argparse, json, joblib, numpy as np, pandas as pd
+import os
 from pathlib import Path
 
 # pip install psycopg2-binary ya ejecutado en el contenedor jupyter
@@ -55,7 +56,7 @@ def main():
     conn.commit()
 
     # Persistir efectos del modelo cuando el artefacto los haya generado.
-    effects_path = Path("/output/bi/feature_effects.csv")
+    effects_path = Path("/output/dashboard/feature_effects.csv")
     if a.model_name == "LogReg" and effects_path.exists():
         effects = pd.read_csv(effects_path)
         value_col = "effect" if "effect" in effects.columns else ("importance" if "importance" in effects.columns else None)

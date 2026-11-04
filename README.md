@@ -1,38 +1,35 @@
 # Predicción de rotación de empleados
 
-Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra preparación de datos con PySpark, modelado con scikit-learn, persistencia en PostgreSQL y visualización en Power BI.
+Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra preparación de datos con PySpark, comparación de modelos con scikit-learn y un panel interactivo para analizar una empresa hipotética y orientar prioridades de negocio.
 
-> **Uso educativo:** los datos y resultados son demostrativos. No están validados para evaluar, seleccionar, retener ni gestionar personas.
+## Qué incluye
 
-## Alcance
-
-- Control de calidad e integración de dos ficheros mediante ETL con PySpark.
-- Comparación de Regresión Logística, Random Forest y MLP.
-- Evaluación con validación cruzada anidada y selección de umbral sin contaminar el fold externo.
+- Control de calidad, integración de datos y ETL con PySpark.
+- Análisis exploratorio y comparación de Regresión Logística, Random Forest y MLP.
+- Evaluación con validación cruzada anidada y selección de umbral dentro de los datos de entrenamiento.
 - Persistencia de características y predicciones en PostgreSQL.
-- Visualización ejecutiva y análisis de prioridades en Power BI.
+- Panel interactivo en HTML, figuras de resultados, recomendaciones para dirección y documentación del flujo.
 
-**Tecnologías:** Python, PySpark, scikit-learn, Jupyter, Docker Compose, PostgreSQL y Power BI.
+**Tecnologías:** Python, PySpark, scikit-learn, Jupyter, Docker Compose y PostgreSQL.
 
 ## Entregables
 
-- [Panel de Power BI](bi/Panel_Rotacion_Empleados.pbix)
-- [Presentación del proyecto](docs/Presentacion_Proyecto_Rotacion.pptx)
-- [Resultados finales verificados](docs/RESULTADOS_FINALES.md) · Memoria PDF final entregada como artefacto de la revisión
-- Notebooks de análisis y documentación en `notebooks/`
-- [Arquitectura](docs/arquitectura.md)
-- [Procedencia de datos](docs/DATA_SOURCE.md)
-- [Protocolo de modelado](docs/MODELING_PROTOCOL.md)
+- [Panel interactivo en HTML](docs/panel/Panel_Rotacion_Empleados_interactivo.html): descarga el archivo y ábrelo con un navegador para usar el selector de modelo.
+- [Presentación del proyecto](docs/Presentacion_Proyecto_Rotacion.pptx).
+- [Resultados finales verificados](docs/RESULTADOS_FINALES.md).
+- [Memoria del proyecto (PDF)](docs/Memoria_Proyecto_Rotacion.pdf) · [versión HTML](docs/Memoria_Proyecto_Rotacion.html).
+- Notebooks de análisis y documentación en `notebooks/`.
+- [Arquitectura](docs/arquitectura.md), [procedencia de datos](docs/DATA_SOURCE.md) y [protocolo de modelado](docs/MODELING_PROTOCOL.md).
 
 ## Datos
 
-El dataset principal contiene 1.470 registros y 35 variables del ejercicio de rotación. La procedencia y las limitaciones están documentadas en `docs/DATA_SOURCE.md`.
+El dataset principal contiene 1.470 registros y 35 variables de rotación de empleados. La procedencia y las limitaciones están documentadas en `docs/DATA_SOURCE.md`.
 
-`encuesta_clima.csv` es completamente sintético: se genera con semilla 42 y cinco escalas aleatorias de 1 a 5. No son respuestas reales ni una medición observada de clima.
+`encuesta_clima.csv` se genera con semilla 42 y cinco escalas aleatorias de 1 a 5, sin consultar la etiqueta de rotación. Las variables `survey_*` se excluyen del entrenamiento.
 
-## Pipeline canónico
+## Pipeline reproducible
 
-La única ruta oficial para obtener las métricas y artefactos finales es:
+Desde la raíz del repositorio, con Docker Engine y Docker Compose v2:
 
 ```bash
 docker compose up -d --build
@@ -72,11 +69,11 @@ done
 docker compose run --rm jupyter python /scripts/render_dashboard_previews.py
 ```
 
-La evaluación usa 5 folds externos y 3 folds internos para seleccionar el umbral. Las variables `survey_*` son sintéticas y se excluyen del entrenamiento; su finalidad es demostrar integración de fuentes. Las métricas finales se generan de nuevo con `scripts/train_ml.py`. La persistencia posterior alimenta las tablas y vistas que utiliza el PBIX. No se deben copiar como definitivos valores históricos de versiones anteriores.
+La evaluación usa 5 folds externos y 3 folds internos para seleccionar el umbral. Las variables `survey_*` se conservan para recorrer la integración de los dos ficheros, pero no se usan para entrenar. Las métricas canónicas se guardan en `output/metrics/`; las predicciones OOF y los coeficientes asociados, en `output/dashboard/`; y las figuras del panel se regeneran en `docs/panel/`.
 
 ## PostgreSQL
 
-El esquema reproducible está en `postgres/init/001_schema.sql`. Las credenciales y puertos se pueden configurar mediante `.env`, usando `.env.example` como plantilla.
+El esquema reproducible está en `postgres/init/001_schema.sql`. Las credenciales y los puertos se pueden configurar mediante `.env`, usando `.env.example` como plantilla.
 
 Para persistir resultados:
 
@@ -95,13 +92,13 @@ docker compose run --rm jupyter python /scripts/persist_results.py \
 
 Para regenerar sus HTML desde cero: `bash scripts/export_notebooks.sh`.
 
-Los notebooks explican el análisis y sirven como material educativo. `02_Modelado_Baseline` y `03_Modelado_DL` mantienen sus comparativas exploratorias separadas y no deben sobrescribir la comparativa canónica.
+Los notebooks documentan el análisis. `02_Modelado_Baseline` y `03_Modelado_DL` muestran análisis exploratorios independientes; sus resultados no sustituyen la evaluación canónica de `scripts/train_ml.py`.
 
-## Dashboard
+## Panel interactivo y visualizaciones
 
-![Comparación de métricas](docs/powerbi/01_Resumen_KPIs.png)
+![Comparación de métricas de los modelos](docs/panel/01_Resumen_KPIs.png)
 
-Las figuras de `docs/powerbi/` son vistas estáticas generadas a partir de los artefactos del pipeline. El PBIX es el entregable interactivo y debe abrirse en Power BI Desktop para comprobar filtros, relaciones e interacciones.
+El [panel HTML interactivo](docs/panel/Panel_Rotacion_Empleados_interactivo.html) ofrece un selector de modelo y presenta las métricas comparativas, tasas observadas, señales OOF, factores asociados y recomendaciones. Para usar la interacción, descarga el archivo HTML y ábrelo en un navegador. Las figuras de `docs/panel/` se regeneran a partir de los artefactos canónicos y distinguen las tasas observadas de las señales OOF.
 
 ## Reproducibilidad y calidad
 
@@ -110,8 +107,8 @@ Las figuras de `docs/powerbi/` son vistas estáticas generadas a partir de los a
 - Healthcheck de PostgreSQL antes de arrancar Jupyter.
 - Tests unitarios en `tests/`.
 - CI en `.github/workflows/ci.yml`.
-- Salidas generables en `output/metrics`, `output/models`, `output/plots` y `output/bi`.
+- Salidas generables en `output/metrics`, `output/models`, `output/plots` y `output/dashboard`.
 
-## Uso responsable
+## Interpretación
 
-El proyecto es formativo. Los coeficientes y asociaciones no son efectos causales, y el rendimiento en este conjunto no se puede trasladar a una plantilla real. No deben introducirse datos personales, confidenciales o de empleados reales.
+Las tasas observadas, las métricas de evaluación, las señales OOF y los coeficientes se muestran por separado. Los resultados ayudan a priorizar preguntas de diagnóstico por área y a planificar el seguimiento de las medidas acordadas.

@@ -9,7 +9,7 @@ services:
     ports:
       - "127.0.0.1:${POSTGRES_PORT:-5442}:5432"
     volumes:
-      - ./postgres:/var/lib/postgresql/data
+      - ./postgres/data:/var/lib/postgresql/data
       - ./postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test: ["CMD-SHELL", "pg_isready"]
@@ -44,7 +44,7 @@ services:
       - ./data:/data
       - ./output:/output
       - ./notebooks:/home/jovyan/work
-      - ./docs/powerbi:/docs/powerbi
+      - ./docs/panel:/docs/panel
     depends_on:
       postgres:
         condition: service_healthy

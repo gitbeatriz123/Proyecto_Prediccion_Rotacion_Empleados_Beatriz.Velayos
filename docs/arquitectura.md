@@ -14,7 +14,7 @@ Jupyter monta las siguientes rutas del repositorio:
 - `./data` → `/data`
 - `./output` → `/output`
 - `./notebooks` → `/home/jovyan/work`
-- ./docs/powerbi → /docs/powerbi
+- `./docs/panel` → `/docs/panel`
 
 PostgreSQL conserva sus datos en `./postgres`. Al añadir workers de Spark, configura en ellos las rutas de datos que necesite el proceso distribuido.
 
@@ -37,4 +37,6 @@ spark.read.csv("/data/raw/WA_Fn-UseC_-HR-Employee-Attrition.csv",
                header=True, inferSchema=True).limit(5).show()
 ```
 
-El proceso ETL y la secuencia completa están descritos en el [README](../README.md).\n\nLa configuración sensible se toma de `.env` y se ejemplifica en `.env.example`. El esquema inicial de PostgreSQL está en `postgres/init/001_schema.sql`.
+El proceso ETL y la secuencia completa están descritos en el [README](../README.md).
+
+La configuración sensible se toma de `.env` y se ejemplifica en `.env.example`. El esquema inicial de PostgreSQL está en `postgres/init/001_schema.sql`.

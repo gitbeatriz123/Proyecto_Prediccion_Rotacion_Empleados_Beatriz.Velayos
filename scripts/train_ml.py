@@ -87,7 +87,7 @@ def evaluate_probs(y, probs, threshold_reference, fold_f1, fold_metrics):
         "fold_metrics": fold_metrics,
     }
 
-def train_one(model_name, df, model_dir, metric_dir, plot_dir, bi_dir):
+def train_one(model_name, df, model_dir, metric_dir, plot_dir, dashboard_dir):
     y = df["attrition_label"].astype(int).to_numpy()
     ids = df["EmployeeNumber"].to_numpy() if "EmployeeNumber" in df else np.arange(len(df))
     model_exclude = set(EXCLUDE) | {c for c in df.columns if c.startswith("survey_")}
@@ -102,29 +102,29 @@ def train_one(model_name, df, model_dir, metric_dir, plot_dir, bi_dir):
     metrics["threshold_selection"] = [float(x) for x in thresholds]
     save_curves(y, probs, label, plot_dir)
     pipe.fit(X, y)
-    model_dir.mkdir(parents=True, exist_ok=True); metric_dir.mkdir(parents=True, exist_ok=True); bi_dir.mkdir(parents=True, exist_ok=True)
+    model_dir.mkdir(parents=True, exist_ok=True); metric_dir.mkdir(parents=True, exist_ok=True); dashboard_dir.mkdir(parents=True, exist_ok=True)
     joblib.dump({"pipeline": pipe, "threshold": threshold_reference}, model_dir / f"{model_name}_pipeline.pkl")
     (metric_dir / f"{model_name}_oof_metrics.json").write_text(json.dumps(metrics, indent=2), encoding="utf-8")
     if model_name == "logreg":
         out = pd.DataFrame({"employee_number": ids, "attrition_label": y, "proba": probs, "pred": (probs >= threshold_reference).astype(int)})
         for source, target in (("Department","department"),("JobRole","jobrole"),("Gender","gender"),("Age","age"),("MonthlyIncome","monthlyincome"),("YearsAtCompany","yearsatcompany"),("OverTime","overtime")):
             if source in df.columns: out[target] = df[source].to_numpy()
-        out.to_csv(bi_dir / "predictions_logreg.csv", index=False)
+        out.to_csv(dashboard_dir / "predictions_logreg.csv", index=False)
         names = pipe.named_steps["prep"].get_feature_names_out()
         coefs = pipe.named_steps["clf"].coef_.ravel()
-        pd.DataFrame({"feature":[n.split("__",1)[-1] for n in names],"effect":coefs}).sort_values("effect", key=lambda s:s.abs(), ascending=False).to_csv(bi_dir / "feature_effects.csv", index=False)
+        pd.DataFrame({"feature":[n.split("__",1)[-1] for n in names],"effect":coefs}).sort_values("effect", key=lambda s:s.abs(), ascending=False).to_csv(dashboard_dir / "feature_effects.csv", index=False)
     if model_name == "rf":
         names = pipe.named_steps["prep"].get_feature_names_out()
         pd.DataFrame({"feature":[n.split("__",1)[-1] for n in names],"importance":pipe.named_steps["clf"].feature_importances_}).sort_values("importance", ascending=False).to_csv(metric_dir / "feature_importance_rf.csv", index=False)
     print(f"{label}: ROC-AUC={metrics['roc_auc']:.3f}; PR-AUC={metrics['pr_auc']:.3f}; F1 evaluado={metrics['f1_opt']:.3f}; umbral referencia={threshold_reference:.3f}")
     return label, metrics
 
-def run(input_path, model_name, model_dir, metric_dir, plot_dir, bi_dir):
+def run(input_path, model_name, model_dir, metric_dir, plot_dir, dashboard_dir):
     df = pd.read_parquet(input_path)
     if "attrition_label" not in df: raise ValueError("Falta attrition_label en el Parquet.")
     results = {}
     for current in MODELS if model_name == "all" else (model_name,):
-        label, metrics = train_one(current, df, Path(model_dir), Path(metric_dir), Path(plot_dir), Path(bi_dir))
+        label, metrics = train_one(current, df, Path(model_dir), Path(metric_dir), Path(plot_dir), Path(dashboard_dir))
         results[label] = metrics
     Path(metric_dir).mkdir(parents=True, exist_ok=True)
     (Path(metric_dir) / "model_compare.json").write_text(json.dumps(results, indent=2), encoding="utf-8")
@@ -133,6 +133,6 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--input", required=True); ap.add_argument("--model", required=True, choices=[*MODELS,"all"])
     ap.add_argument("--outdir_models", default="/output/models"); ap.add_argument("--outdir_metrics", default="/output/metrics")
-    ap.add_argument("--outdir_plots", default="/output/plots"); ap.add_argument("--outdir_bi", default="/output/bi")
+    ap.add_argument("--outdir_plots", default="/output/plots"); ap.add_argument("--outdir_dashboard", default="/output/dashboard")
     args = ap.parse_args()
-    run(args.input, args.model, args.outdir_models, args.outdir_metrics, args.outdir_plots, args.outdir_bi)
+    run(args.input, args.model, args.outdir_models, args.outdir_metrics, args.outdir_plots, args.outdir_dashboard)
