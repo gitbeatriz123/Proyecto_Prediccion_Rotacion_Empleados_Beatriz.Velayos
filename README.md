@@ -14,7 +14,8 @@ Proyecto educativo de Big Data y analítica de Recursos Humanos. Integra prepara
 
 ## Entregables
 
-- [Panel interactivo en HTML](docs/panel/Panel_Rotacion_Empleados_interactivo.html): descarga el archivo y ábrelo con un navegador para usar el selector de modelo.
+- [Ver el panel y sus gráficas directamente en GitHub](docs/panel/visualizacion.md).
+- El archivo HTML interactivo con selector está en `docs/panel/Panel_Rotacion_Empleados_interactivo.html`; descárgalo para usarlo en un navegador.
 - [Presentación del proyecto](docs/Presentacion_Proyecto_Rotacion.pptx).
 - [Resultados finales verificados](docs/RESULTADOS_FINALES.md).
 - [Memoria del proyecto (PDF)](docs/Memoria_Proyecto_Rotacion.pdf) · [versión HTML](docs/Memoria_Proyecto_Rotacion.html).
@@ -98,7 +99,7 @@ Los notebooks documentan el análisis. `02_Modelado_Baseline` y `03_Modelado_DL`
 
 ![Comparación de métricas de los modelos](docs/panel/01_Resumen_KPIs.png)
 
-El [panel HTML interactivo](docs/panel/Panel_Rotacion_Empleados_interactivo.html) ofrece un selector de modelo y presenta las métricas comparativas, tasas observadas, señales OOF, factores asociados y recomendaciones. Para usar la interacción, descarga el archivo HTML y ábrelo en un navegador. Las figuras de `docs/panel/` se regeneran a partir de los artefactos canónicos y distinguen las tasas observadas de las señales OOF.
+[Abre la página del panel y sus cinco gráficas](docs/panel/visualizacion.md) para verlas directamente en GitHub. Las figuras de `docs/panel/` se regeneran a partir de los artefactos canónicos y distinguen las tasas observadas de las señales OOF. El archivo HTML interactivo con selector de modelos también se conserva en esa carpeta para descargarlo y abrirlo en un navegador.
 
 ## Reproducibilidad y calidad
 

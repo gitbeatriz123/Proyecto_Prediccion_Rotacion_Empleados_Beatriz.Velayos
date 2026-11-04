@@ -65,4 +65,4 @@ La ejecución canónica de GitHub Actions [37276469074](https://github.com/gitbe
 6. generación de previews;
 7. publicación de artefactos de reproducibilidad.
 
-El [panel interactivo HTML](panel/Panel_Rotacion_Empleados_interactivo.html) refleja estos resultados y puede abrirse sin Docker. Descarga el archivo HTML y ábrelo en un navegador para usar el selector de modelo.
+El [panel visual con las cinco gráficas](panel/visualizacion.md) permite verlas directamente en GitHub. El archivo HTML interactivo con selector de modelos se conserva en la misma carpeta para descargarlo y abrirlo en un navegador.
